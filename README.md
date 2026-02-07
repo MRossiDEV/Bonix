@@ -1,36 +1,148 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bonix MVP - Internal Alpha
 
-## Getting Started
+A promotional platform that connects merchants with customers through cashback-driven deals.
 
-First, run the development server:
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Database**: Supabase (PostgreSQL)
+- **Auth**: Supabase Auth
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+
+## Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Setup Supabase
+
+Follow the instructions in [`supabase/README.md`](./supabase/README.md) to:
+- Create a Supabase project
+- Run database migrations
+- Configure environment variables
+
+### 3. Configure Environment
+
+```bash
+cp .env.example .env
+```
+
+Then fill in your Supabase credentials in `.env`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL="https://your-project-ref.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+bonix/
+├── app/                    # Next.js App Router pages
+├── lib/                    # Core utilities
+│   ├── supabase/          # Supabase client configurations
+│   ├── config.ts          # App configuration & feature flags
+│   ├── types.ts           # Core enums and types
+│   └── database.types.ts  # Database type definitions
+├── supabase/
+│   ├── migrations/        # SQL migrations
+│   └── README.md          # Database setup guide
+└── middleware.ts          # Auth middleware
+```
 
-## Learn More
+## Core Features (MVP Phase 1)
 
-To learn more about Next.js, take a look at the following resources:
+### For Users
+- Browse active promotions
+- Reserve promos (15-day TTL)
+- Generate QR code for redemption
+- Wallet system with cashback
+- Redemption history
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### For Merchants
+- Create and manage promos
+- Scan QR codes to redeem
+- View active reservations
+- Monthly balance overview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### For Admins
+- Disable merchants/promos
+- View all redemptions
+- Adjust merchant balances
+- Audit logs
 
-## Deploy on Vercel
+## Environment Variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes |
+| `JWT_SECRET` | Secret for JWT tokens | Yes |
+| `QR_TOKEN_SECRET` | Secret for QR code signing | Yes |
+| `QR_TOKEN_TTL_MINUTES` | QR code expiration time | No (default: 10) |
+| `PLATFORM_FEE` | Platform fee percentage | No (default: 3) |
+| `AFFILIATE_FEE` | Affiliate fee percentage | No (default: 5) |
+| `ENABLE_WALLET` | Enable wallet feature | No (default: true) |
+| `ENABLE_AFFILIATES` | Enable affiliate system | No (default: false) |
+| `ENABLE_PAYMENT_GATEWAY` | Enable payment gateway | No (default: false) |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development Commands
+
+```bash
+# Run dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run linter
+npm run lint
+```
+
+## Database Management
+
+All database operations are handled through Supabase:
+
+- **Migrations**: Located in `supabase/migrations/`
+- **RLS Policies**: Enforced at database level
+- **Functions**: Business logic in PostgreSQL functions
+- **Real-time**: Enabled via Supabase subscriptions (optional)
+
+See [`supabase/README.md`](./supabase/README.md) for detailed database documentation.
+
+## Security Features
+
+- **Row Level Security (RLS)**: All tables protected
+- **QR Token Signing**: Prevents tampering
+- **Idempotent APIs**: Prevents double redemptions
+- **Audit Logging**: All critical actions logged
+- **Role-based Access**: USER | MERCHANT | ADMIN
+
+## Phase 1 Exit Criteria
+
+- ✅ Real merchant can redeem a real promo
+- ✅ Cashback calculation is accurate
+- ✅ No data corruption on failure
+- ✅ Numbers can be trusted without manual verification
+
+## License
+
+Proprietary - Internal Use Only
+"# Bonix" 
