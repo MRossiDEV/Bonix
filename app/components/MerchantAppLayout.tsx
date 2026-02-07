@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
-type UserAppLayoutProps = {
+type MerchantAppLayoutProps = {
   children: React.ReactNode;
   basePath: string;
-  userName?: string;
-  userEmail?: string;
-  userInitials?: string;
+  merchantName?: string;
+  merchantEmail?: string;
+  merchantInitials?: string;
 };
 
 type NavItem = {
@@ -21,24 +21,24 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    path: "/feed",
-    label: "Feed",
-    icon: ({ active }) => <HomeIcon active={active} />,
+    path: "/dashboard",
+    label: "Dashboard",
+    icon: ({ active }) => <GridIcon active={active} />,
   },
   {
-    path: "/reservations",
-    label: "Reservations",
-    icon: ({ active }) => <BookmarkIcon active={active} />,
+    path: "/promos",
+    label: "Promos",
+    icon: ({ active }) => <TagIcon active={active} />,
   },
   {
-    path: "/wallet",
-    label: "Wallet",
-    icon: ({ active }) => <WalletIcon active={active} />,
+    path: "/redemptions",
+    label: "Redemptions",
+    icon: ({ active }) => <ReceiptIcon active={active} />,
   },
   {
-    path: "/nearby",
-    label: "Nearby",
-    icon: ({ active }) => <MapPinIcon active={active} />,
+    path: "/qr",
+    label: "QR",
+    icon: ({ active }) => <QrIcon active={active} />,
   },
   {
     path: "/profile",
@@ -47,29 +47,29 @@ const navItems: NavItem[] = [
   },
 ];
 
-const pageTitles: Record<string, string> = {
-  "/feed": "",
-  "/reservations": "Reservations",
-  "/wallet": "Wallet",
-  "/nearby": "Nearby",
+const pageTitles = {
+  "/dashboard": "Dashboard",
+  "/promos": "Promos",
+  "/redemptions": "Redemptions",
+  "/qr": "QR",
   "/profile": "Profile",
 };
 
 const sideMenuItems = [
-  { label: "Profile", path: "/profile" },
-  { label: "Wallet", path: "/wallet" },
-  { label: "My Reservations", path: "/reservations" },
+  { label: "Store profile", path: "/profile" },
+  { label: "Payouts", path: "/dashboard" },
+  { label: "Team access", path: "/profile" },
   { label: "Settings", path: "/profile" },
-  { label: "Help / Support", path: "/profile" },
+  { label: "Support", path: "/profile" },
 ];
 
-export default function UserAppLayout({
+export default function MerchantAppLayout({
   children,
   basePath,
-  userName = "Aurelia Brooks",
-  userEmail = "aurelia@bonix.app",
-  userInitials = "AB",
-}: UserAppLayoutProps) {
+  merchantName = "Bonix Merchant",
+  merchantEmail = "merchant@bonix.app",
+  merchantInitials = "BM",
+}: MerchantAppLayoutProps) {
   const pathname = usePathname();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -101,7 +101,7 @@ export default function UserAppLayout({
     const match = Object.keys(pageTitles).find((path) =>
       pathname.startsWith(`${normalizedBasePath}${path}`),
     );
-    return match ? pageTitles[match] : "";
+    return match ? pageTitles[match as keyof typeof pageTitles] : "";
   }, [normalizedBasePath, pathname]);
 
   useEffect(() => {
@@ -126,19 +126,19 @@ export default function UserAppLayout({
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#121212] text-[#FAFAFA]">
+    <div className="relative min-h-screen overflow-x-hidden bg-[#111111] text-[#FAFAFA]">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[#FF7A00]/20 blur-[120px]" />
-        <div className="absolute top-1/3 -left-24 h-56 w-56 rounded-full bg-[#00E5A8]/15 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#7B61FF]/20 blur-[120px]" />
+        <div className="absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[#FFB547]/20 blur-[120px]" />
+        <div className="absolute top-1/3 -left-24 h-56 w-56 rounded-full bg-[#4FD1C5]/15 blur-[120px]" />
+        <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#F56565]/20 blur-[120px]" />
       </div>
 
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#262626] bg-[#111111]/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4">
           <button
             type="button"
             onClick={() => setSideMenuOpen(true)}
-            className="rounded-2xl border border-[#2A2A2A] bg-[#1E1E1E] p-2"
+            className="rounded-2xl border border-[#262626] bg-[#1A1A1A] p-2"
             aria-label="Open menu"
           >
             <MenuIcon />
@@ -146,12 +146,12 @@ export default function UserAppLayout({
 
           <div className="flex-1 text-center">
             {currentTitle ? (
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#9CA3AF]">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#A1A1AA]">
                 {currentTitle}
               </p>
             ) : (
-              <p className="text-sm uppercase tracking-[0.4em] text-[#9CA3AF]">
-                bonix
+              <p className="text-sm uppercase tracking-[0.4em] text-[#A1A1AA]">
+                bonix merchant
               </p>
             )}
           </div>
@@ -159,11 +159,11 @@ export default function UserAppLayout({
           <button
             type="button"
             onClick={() => setAvatarMenuOpen((open) => !open)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2A2A2A] bg-[#1E1E1E]"
-            aria-label="Open profile menu"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#262626] bg-[#1A1A1A]"
+            aria-label="Open merchant menu"
           >
-            <span className="text-xs font-semibold text-[#FF7A00]">
-              {userInitials}
+            <span className="text-xs font-semibold text-[#FFB547]">
+              {merchantInitials}
             </span>
           </button>
         </div>
@@ -173,7 +173,7 @@ export default function UserAppLayout({
         {children}
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#262626] bg-[#111111]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3">
           {resolvedNavItems.map((item) => {
             const isActive = pathname ? pathname.startsWith(item.href) : false;
@@ -184,8 +184,8 @@ export default function UserAppLayout({
                 onClick={() => handleActiveTabClick(item.href)}
                 className={`flex flex-1 flex-col items-center gap-1 rounded-2xl py-2 text-[11px] font-medium transition ${
                   isActive
-                    ? "text-[#FF7A00]"
-                    : "text-[#9CA3AF] hover:text-[#FAFAFA]"
+                    ? "text-[#FFB547]"
+                    : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {item.icon({ active: isActive })}
@@ -211,14 +211,14 @@ export default function UserAppLayout({
               exit={{ x: "-100%" }}
               transition={{ duration: 0.3 }}
               onClick={(event) => event.stopPropagation()}
-              className="flex h-full w-72 flex-col gap-6 border-r border-[#2A2A2A] bg-[#1E1E1E] px-6 py-8"
+              className="flex h-full w-72 flex-col gap-6 border-r border-[#262626] bg-[#1A1A1A] px-6 py-8"
             >
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-[#9CA3AF]">
-                  Bonix
+                <p className="text-xs uppercase tracking-[0.4em] text-[#A1A1AA]">
+                  Bonix Merchant
                 </p>
-                <p className="mt-3 text-lg font-semibold">{userName}</p>
-                <p className="text-sm text-[#9CA3AF]">{userEmail}</p>
+                <p className="mt-3 text-lg font-semibold">{merchantName}</p>
+                <p className="text-sm text-[#A1A1AA]">{merchantEmail}</p>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -226,7 +226,7 @@ export default function UserAppLayout({
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
+                    className="rounded-2xl border border-[#262626] bg-[#111111] px-4 py-3 text-sm"
                   >
                     {item.label}
                   </Link>
@@ -235,7 +235,7 @@ export default function UserAppLayout({
 
               <button
                 type="button"
-                className="mt-auto rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]"
+                className="mt-auto rounded-2xl border border-[#262626] bg-[#111111] px-4 py-3 text-sm text-[#FFB547]"
               >
                 Logout
               </button>
@@ -259,25 +259,25 @@ export default function UserAppLayout({
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.2 }}
               onClick={(event) => event.stopPropagation()}
-              className="absolute right-4 top-16 w-64 rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-4"
+              className="absolute right-4 top-16 w-64 rounded-3xl border border-[#262626] bg-[#1A1A1A] p-4"
             >
               <p className="text-sm font-semibold">Quick menu</p>
               <div className="mt-4 space-y-2">
                 <Link
-                  href="/app/profile"
-                  className="block rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
+                  href={`${normalizedBasePath}/profile`}
+                  className="block rounded-2xl border border-[#262626] bg-[#111111] px-4 py-3 text-sm"
                 >
                   View profile
                 </Link>
-                <div className="rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm">
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#9CA3AF]">
-                    Wallet balance
+                <div className="rounded-2xl border border-[#262626] bg-[#111111] px-4 py-3 text-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#A1A1AA]">
+                    This week sales
                   </p>
-                  <p className="mt-2 text-lg font-semibold">$248.60</p>
+                  <p className="mt-2 text-lg font-semibold">$12,480</p>
                 </div>
                 <button
                   type="button"
-                  className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]"
+                  className="w-full rounded-2xl border border-[#262626] bg-[#111111] px-4 py-3 text-sm text-[#FFB547]"
                 >
                   Logout
                 </button>
@@ -308,74 +308,81 @@ function MenuIcon() {
   );
 }
 
-function HomeIcon({ active }: { active: boolean }) {
+function GridIcon({ active }: { active: boolean }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className={`h-5 w-5 ${active ? "text-[#FF7A00]" : "text-current"}`}
+      className={`h-5 w-5 ${active ? "text-[#FFB547]" : "text-current"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M3 10.5L12 3l9 7.5" />
-      <path d="M5 10v10h14V10" />
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
     </svg>
   );
 }
 
-function BookmarkIcon({ active }: { active: boolean }) {
+function TagIcon({ active }: { active: boolean }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className={`h-5 w-5 ${active ? "text-[#FF7A00]" : "text-current"}`}
+      className={`h-5 w-5 ${active ? "text-[#FFB547]" : "text-current"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M6 4h12v16l-6-4-6 4z" />
+      <path d="M3 12l9 9 9-9-9-9H3v9z" />
+      <circle cx="7" cy="7" r="1.5" />
     </svg>
   );
 }
 
-function WalletIcon({ active }: { active: boolean }) {
+function ReceiptIcon({ active }: { active: boolean }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className={`h-5 w-5 ${active ? "text-[#FF7A00]" : "text-current"}`}
+      className={`h-5 w-5 ${active ? "text-[#FFB547]" : "text-current"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M3 7h18v10H3z" />
-      <path d="M17 11h2" />
-      <path d="M3 7l3-3h12l3 3" />
+      <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z" />
+      <path d="M9 7h6" />
+      <path d="M9 11h6" />
+      <path d="M9 15h4" />
     </svg>
   );
 }
 
-function MapPinIcon({ active }: { active: boolean }) {
+function QrIcon({ active }: { active: boolean }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className={`h-5 w-5 ${active ? "text-[#FF7A00]" : "text-current"}`}
+      className={`h-5 w-5 ${active ? "text-[#FFB547]" : "text-current"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M12 21s7-6.3 7-12a7 7 0 10-14 0c0 5.7 7 12 7 12z" />
-      <circle cx="12" cy="9" r="2.5" />
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+      <path d="M14 14h7v7h-7z" />
+      <path d="M17 17h1" />
     </svg>
   );
 }
@@ -385,7 +392,7 @@ function UserIcon({ active }: { active: boolean }) {
     <svg
       aria-hidden="true"
       viewBox="0 0 24 24"
-      className={`h-5 w-5 ${active ? "text-[#FF7A00]" : "text-current"}`}
+      className={`h-5 w-5 ${active ? "text-[#FFB547]" : "text-current"}`}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"

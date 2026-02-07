@@ -1,12 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { logAudit } from '@/lib/audit'
 import { requireAdmin } from '@/lib/admin'
 
 export async function PATCH(
-  request: Request,
-  { params }: { params: { promoId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ promoId: string }> }
 ) {
+  const { promoId } = await params
   const adminContext = await requireAdmin()
   if ('error' in adminContext) {
     return NextResponse.json(
@@ -27,7 +28,7 @@ export async function PATCH(
   const { data: promo, error: promoError } = await admin
     .from('promos')
     .update({ status: 'DISABLED' })
-    .eq('id', params.promoId)
+    .eq('id', promoId)
     .select('id, status, merchant_id')
     .maybeSingle()
 

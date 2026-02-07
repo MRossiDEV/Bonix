@@ -18,6 +18,10 @@ type PromoRow = {
   merchant: { business_name: string } | null;
 };
 
+type PromoRowRaw = Omit<PromoRow, "merchant"> & {
+  merchant: { business_name: string }[] | null;
+};
+
 const MAX_LIMIT = 50;
 
 export async function GET(request: Request) {
@@ -51,5 +55,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 
-  return NextResponse.json({ promos: (data ?? []) as PromoRow[] });
+  const promos = (data ?? []).map((row: PromoRowRaw): PromoRow => {
+    const merchant = Array.isArray(row.merchant) ? row.merchant[0] ?? null : row.merchant;
+    return { ...row, merchant };
+  });
+
+  return NextResponse.json({ promos });
 }
