@@ -72,12 +72,12 @@ export function PromoFeed({
 
       if (!isActive) return;
 
-      const promos = (data ?? []).map((row: PromoPublicRow): PromoRow => {
+      const promos: PromoRow[] = (data ?? []).map((row: PromoPublicRow): PromoRow => {
         const merchant = row.merchant_name ? { business_name: row.merchant_name } : null;
         return { ...row, merchant };
       });
 
-      setItems(promos.map((row, index) => mapPromoRowToCard(row, index)));
+      setItems(promos.map((row: PromoRow, index) => mapPromoRowToCard(row, index)));
       setLoading(false);
     };
 
