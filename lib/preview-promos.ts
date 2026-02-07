@@ -1,0 +1,163 @@
+export type PromoPreview = {
+  id: string;
+  merchantName: string;
+  title: string;
+  description: string;
+  discountPercent: number;
+  imageUrl?: string;
+  distanceLabel: string;
+  neighborhood: string;
+  priceLabel: string;
+  previewMode: true;
+};
+
+export const promoPreviews: PromoPreview[] = [
+  {
+    id: "pocitos-grill-15",
+    merchantName: "Pocitos Grill",
+    title: "15% off dinner for two",
+    description: "Charcoal plates, house chimichurri, and slow-roasted sides.",
+    discountPercent: 15,
+    imageUrl: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "0.8 km",
+    neighborhood: "Pocitos",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+  {
+    id: "cafe-centro-20",
+    merchantName: "Cafe Centro",
+    title: "20% off pastries + coffee",
+    description: "Buttery croissants, single-origin espresso, and oat lattes.",
+    discountPercent: 20,
+    imageUrl: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "1.2 km",
+    neighborhood: "Centro",
+    priceLabel: "$",
+    previewMode: true,
+  },
+  {
+    id: "cordon-pizza-10",
+    merchantName: "Cordon Pizza Lab",
+    title: "10% off wood-fired slices",
+    description: "Margherita, spicy honey pepperoni, and a crisp crust.",
+    discountPercent: 10,
+    imageUrl: "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "1.5 km",
+    neighborhood: "Cordon",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+  {
+    id: "ciudad-vieja-ramen-18",
+    merchantName: "Vieja Ramen",
+    title: "18% off tonkotsu bowls",
+    description: "Slow-braised pork, soft egg, and handmade noodles.",
+    discountPercent: 18,
+    imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "2.0 km",
+    neighborhood: "Ciudad Vieja",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+  {
+    id: "parque-rodo-gelato-25",
+    merchantName: "Parque Rodo Gelato",
+    title: "25% off artisan gelato",
+    description: "Pistachio, dark chocolate, and mango sorbet.",
+    discountPercent: 25,
+    imageUrl: "https://images.unsplash.com/photo-1481391032119-d89fee407e44?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "2.3 km",
+    neighborhood: "Parque Rodo",
+    priceLabel: "$",
+    previewMode: true,
+  },
+  {
+    id: "bulevar-sushi-12",
+    merchantName: "Bulevar Sushi",
+    title: "12% off sushi set",
+    description: "Eight-piece nigiri and chef roll with yuzu mayo.",
+    discountPercent: 12,
+    imageUrl: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "3.1 km",
+    neighborhood: "Bulevar",
+    priceLabel: "$$$",
+    previewMode: true,
+  },
+  {
+    id: "punta-carretas-brunch-14",
+    merchantName: "Punta Carretas Brunch",
+    title: "14% off brunch plates",
+    description: "Avocado toast, poached eggs, and citrus granola.",
+    discountPercent: 14,
+    imageUrl: "https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "3.4 km",
+    neighborhood: "Punta Carretas",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+  {
+    id: "la-blanqueada-burger-16",
+    merchantName: "La Blanqueada Burger",
+    title: "16% off double smash",
+    description: "Two smashed patties, melted cheddar, and house pickles.",
+    discountPercent: 16,
+    imageUrl: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "4.0 km",
+    neighborhood: "La Blanqueada",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+  {
+    id: "tres-cruces-tacos-22",
+    merchantName: "Tres Cruces Tacos",
+    title: "22% off taco trio",
+    description: "Birria, al pastor, and grilled veggie with lime crema.",
+    discountPercent: 22,
+    imageUrl: "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "4.4 km",
+    neighborhood: "Tres Cruces",
+    priceLabel: "$",
+    previewMode: true,
+  },
+  {
+    id: "malvin-juice-11",
+    merchantName: "Malvin Juice Bar",
+    title: "11% off cold-pressed juice",
+    description: "Ginger citrus boost, green glow, or berry reset.",
+    discountPercent: 11,
+    imageUrl: "https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "5.2 km",
+    neighborhood: "Malvin",
+    priceLabel: "$",
+    previewMode: true,
+  },
+  {
+    id: "buceo-italian-17",
+    merchantName: "Buceo Trattoria",
+    title: "17% off fresh pasta",
+    description: "Hand-rolled tagliatelle with lemon basil butter.",
+    discountPercent: 17,
+    imageUrl: "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "5.8 km",
+    neighborhood: "Buceo",
+    priceLabel: "$$$",
+    previewMode: true,
+  },
+  {
+    id: "pocitos-tapas-13",
+    merchantName: "Pocitos Tapas",
+    title: "13% off tapas night",
+    description: "Patatas bravas, grilled shrimp, and sangria pitcher.",
+    discountPercent: 13,
+    imageUrl: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=900&q=80",
+    distanceLabel: "6.1 km",
+    neighborhood: "Pocitos",
+    priceLabel: "$$",
+    previewMode: true,
+  },
+];
+
+export function getPromoPreviewById(id: string): PromoPreview | undefined {
+  return promoPreviews.find((promo) => promo.id === id);
+}
