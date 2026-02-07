@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { mapPromoRowToCard, PromoCardData } from "@/lib/promos";
+import { createClient } from "@/lib/supabase/client";
 import { PreviewInstallModal } from "@/app/components/PreviewInstallModal";
 import { usePwaInstallPrompt } from "@/app/components/usePwaInstallPrompt";
 
@@ -26,6 +27,10 @@ type PromoRow = {
   cashback_percent: number | string;
   expires_at: string;
   merchant: { business_name: string } | null;
+};
+
+type PromoPublicRow = Omit<PromoRow, "merchant"> & {
+  merchant_name: string | null;
 };
 
 const gradients = [
@@ -55,22 +60,24 @@ export function PromoFeed({
       setLoading(true);
       setErrorMessage(null);
 
-      const params = new URLSearchParams();
-      if (typeof limit === "number") {
-        params.set("limit", String(limit));
-      }
+      const supabase = createClient();
 
-      const response = await fetch(`/api/promos?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error("Failed to load promos");
+      const { data, error } = await supabase.rpc(
+        "get_public_promos",
+        typeof limit === "number" ? { p_limit: limit } : undefined,
+      );
+      if (error) {
+        throw new Error(error.message);
       }
-
-      const payload = (await response.json()) as { promos: PromoRow[] };
 
       if (!isActive) return;
 
-      setItems((payload.promos ?? []).map((row, index) => mapPromoRowToCard(row, index)));
+      const promos = (data ?? []).map((row: PromoPublicRow): PromoRow => {
+        const merchant = row.merchant_name ? { business_name: row.merchant_name } : null;
+        return { ...row, merchant };
+      });
 
+      setItems(promos.map((row, index) => mapPromoRowToCard(row, index)));
       setLoading(false);
     };
 

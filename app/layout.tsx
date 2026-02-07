@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { ServiceWorkerRegistration } from "@/app/components/ServiceWorkerRegistration";
 
 const poppins = Poppins({
   variable: "--font-sans",
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
+        <ServiceWorkerRegistration />
         {children}
       </body>
     </html>
