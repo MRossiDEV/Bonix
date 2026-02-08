@@ -79,6 +79,20 @@ export default function LandingPage() {
           >
             I'm a business
           </Link>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link
+              href="/login"
+              className="block w-full rounded-2xl border border-[#2A2A2A] py-3 text-center text-sm text-[#FAFAFA]"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/register"
+              className="block w-full rounded-2xl border border-[#FF7A00] py-3 text-center text-sm font-semibold text-[#FF7A00]"
+            >
+              Create account
+            </Link>
+          </div>
         </motion.div>
       </section>
 

@@ -9,7 +9,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type UserRole = 'USER' | 'MERCHANT' | 'ADMIN'
+export type UserRole = 'USER' | 'MERCHANT' | 'AGENT' | 'ADMIN'
 export type PromoStatus = 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'EXPIRED'
 export type ReservationStatus = 'ACTIVE' | 'EXPIRED' | 'REDEEMED' | 'CANCELLED'
 export type RedemptionStatus = 'PENDING' | 'CONFIRMED' | 'FAILED' | 'REFUNDED'
@@ -26,6 +26,10 @@ export interface Database {
           phone: string | null
           role: UserRole
           status: string
+          password_hash: string | null
+          auth_provider: string | null
+          avatar_url: string | null
+          last_login_at: string | null
           created_at: string
           updated_at: string
         }
@@ -36,6 +40,10 @@ export interface Database {
           phone?: string | null
           role?: UserRole
           status?: string
+          password_hash?: string | null
+          auth_provider?: string | null
+          avatar_url?: string | null
+          last_login_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -46,6 +54,10 @@ export interface Database {
           phone?: string | null
           role?: UserRole
           status?: string
+          password_hash?: string | null
+          auth_provider?: string | null
+          avatar_url?: string | null
+          last_login_at?: string | null
           created_at?: string
           updated_at?: string
         }

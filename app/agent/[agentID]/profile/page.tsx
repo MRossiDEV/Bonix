@@ -1,20 +1,22 @@
 import Link from "next/link";
 
-export default async function UserProfilePage({
+export default async function AgentProfilePage({
   params,
-}: Readonly<{ params: Promise<{ userId: string }> }>) {
-  const { userId } = await params;
+}: Readonly<{ params: Promise<{ agentID: string }> }>) {
+  const { agentID } = await params;
+
+  const preferences = ["Notifications", "Escalation rules", "Security", "Support"];
 
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#121212] text-lg font-semibold text-[#FF7A00]">
-            AB
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#121212] text-lg font-semibold text-[#38BDF8]">
+            BA
           </div>
           <div>
-            <p className="text-xl font-semibold">Bonix Member</p>
-            <p className="text-sm text-[#9CA3AF]">member@bonix.app</p>
+            <p className="text-xl font-semibold">Bonix Agent</p>
+            <p className="text-sm text-[#9CA3AF]">agent@bonix.app</p>
           </div>
         </div>
       </section>
@@ -24,46 +26,61 @@ export default async function UserProfilePage({
           <div>
             <p className="text-lg font-semibold">Switch role</p>
             <p className="text-sm text-[#9CA3AF]">
-              Access sections for accepted roles.
+              Jump to other accepted workspaces.
             </p>
           </div>
           <span className="rounded-full border border-[#2A2A2A] px-3 py-1 text-xs text-[#9CA3AF]">
-            Current: User
+            Current: Agent
           </span>
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Link
-            href={`/user/${userId}/feed`}
+            href={`/admin/${agentID}/dashboard`}
             className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
           >
-            <span>User</span>
+            <span>Admin</span>
             <span className="text-xs text-[#9CA3AF]">Accepted</span>
           </Link>
           <Link
-            href={`/merchant/${userId}/dashboard`}
+            href={`/merchant/${agentID}/dashboard`}
             className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
           >
             <span>Merchant</span>
             <span className="text-xs text-[#9CA3AF]">Accepted</span>
           </Link>
           <Link
-            href={`/agent/${userId}/dashboard`}
+            href={`/user/${agentID}/feed`}
             className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
           >
-            <span>Agent</span>
+            <span>User</span>
             <span className="text-xs text-[#9CA3AF]">Accepted</span>
           </Link>
         </div>
       </section>
 
+      <section className="rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-6">
+        <h2 className="text-lg font-semibold">Agent status</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {[
+            { label: "Active cases", value: "18" },
+            { label: "Resolved this week", value: "64" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-[#2A2A2A] bg-[#121212] p-4"
+            >
+              <p className="text-xs uppercase tracking-[0.3em] text-[#9CA3AF]">
+                {item.label}
+              </p>
+              <p className="mt-2 text-xl font-semibold">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="space-y-3">
-        {[
-          "Payment methods",
-          "Saved promos",
-          "Notifications",
-          "Privacy",
-        ].map((item) => (
+        {preferences.map((item) => (
           <button
             key={item}
             type="button"
@@ -77,7 +94,7 @@ export default async function UserProfilePage({
 
       <button
         type="button"
-        className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] py-3 text-sm text-[#FF7A00]"
+        className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] py-3 text-sm text-[#38BDF8]"
       >
         Logout
       </button>
