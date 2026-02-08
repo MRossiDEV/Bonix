@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
+import { config } from "@/lib/config";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -69,7 +70,8 @@ export default function RegisterPage() {
 
     try {
       const supabase = createClient();
-      const redirectTo = new URL("/auth/callback", window.location.origin);
+      const appOrigin = config.appUrl || window.location.origin;
+      const redirectTo = new URL("/auth/callback", appOrigin);
       redirectTo.searchParams.set("next", "/feed");
 
       const { error } = await supabase.auth.signInWithOAuth({
