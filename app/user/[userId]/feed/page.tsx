@@ -13,6 +13,7 @@ type PromoRow = {
   original_price: number | string;
   discounted_price: number | string;
   cashback_percent: number | string;
+  image: string | null;
   expires_at: string;
   total_slots: number;
   available_slots: number;
@@ -147,17 +148,25 @@ export default function UserFeedPage() {
             <motion.article
               key={promo.id}
               whileTap={{ scale: disabled ? 1 : 0.97 }}
-              className={`overflow-hidden rounded-3xl bg-[#121212] shadow-lg ${
+              className={`overflow-hidden bg-[#121212] shadow-lg ${
                 disabled ? "opacity-50" : ""
               }`}
             >
               {/* IMAGE */}
-              <div className="relative h-52">
+              <div className="relative h-100 w-full">
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${
                     fallbackGradients[index % fallbackGradients.length]
                   }`}
                 />
+                {promo.imageUrl ? (
+                  <img
+                    src={promo.imageUrl}
+                    alt={promo.title}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
                 {/* BADGES */}

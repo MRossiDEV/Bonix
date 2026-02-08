@@ -26,6 +26,7 @@ type PromoRow = {
   discounted_price: number | string;
   cashback_percent: number | string;
   expires_at: string;
+  image: string | null;
   merchant: { business_name: string } | null;
 };
 

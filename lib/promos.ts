@@ -26,6 +26,7 @@ type PromoRow = {
   original_price: number | string;
   discounted_price: number | string;
   cashback_percent: number | string;
+  image?: string | null;
   merchant: { business_name: string } | null;
   status?: string;
   is_featured?: boolean;
@@ -66,7 +67,7 @@ export function mapPromoRowToCard(row: PromoRow): PromoCardData {
     title: row.title,
     description: row.description,
     discountPercent: getDiscountPercent(originalPrice, discountedPrice),
-    imageUrl: undefined,
+    imageUrl: row.image ?? undefined,
     distanceLabel: "Nearby",
     neighborhood: "Bonix",
     priceLabel: getPriceLabel(discountedPrice),

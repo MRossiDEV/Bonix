@@ -11,6 +11,7 @@ type PromoRow = {
   original_price: number | string;
   discounted_price: number | string;
   cashback_percent: number | string;
+  image: string | null;
   expires_at: string;
   total_slots: number | string;
   available_slots: number | string;
@@ -34,7 +35,7 @@ export default async function PromoDetailPage({ params }: PromoDetailPageProps) 
   const { data, error } = await admin
     .from("promos")
     .select(
-      "id, title, description, original_price, discounted_price, cashback_percent, expires_at, total_slots, available_slots, status, is_featured, category, merchant:merchants (business_name)",
+      "id, title, description, original_price, discounted_price, cashback_percent, image, expires_at, total_slots, available_slots, status, is_featured, category, merchant:merchants (business_name)",
     )
     .eq("id", id)
     .eq("status", "ACTIVE")

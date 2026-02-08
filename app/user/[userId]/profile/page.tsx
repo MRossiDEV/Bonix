@@ -68,10 +68,10 @@ export default async function UserProfilePage({
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Link
-            href={`/user/${userId}/feed`}
+            href={`/admin/${userId}/dashboard`}
             className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
           >
-            <span>User</span>
+            <span>Admin</span>
             <span className="text-xs text-[#9CA3AF]">Accepted</span>
           </Link>
           <Link

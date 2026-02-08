@@ -8,6 +8,7 @@ RETURNS TABLE (
   original_price DECIMAL,
   discounted_price DECIMAL,
   cashback_percent DECIMAL,
+  image TEXT,
   expires_at TIMESTAMPTZ,
   merchant_name TEXT
 ) AS $$
@@ -18,6 +19,7 @@ RETURNS TABLE (
     promos.original_price,
     promos.discounted_price,
     promos.cashback_percent,
+    promos.image,
     promos.expires_at,
     merchants.business_name AS merchant_name
   FROM promos

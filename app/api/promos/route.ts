@@ -9,6 +9,7 @@ type PromoRow = {
   original_price: number;
   discounted_price: number;
   cashback_percent: number;
+  image: string | null;
   expires_at: string;
   total_slots: number;
   available_slots: number;
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
   let query = admin
     .from("promos")
     .select(
-      "id, title, description, original_price, discounted_price, cashback_percent, expires_at, total_slots, available_slots, status, is_featured, category, merchant:merchants (business_name)",
+      "id, title, description, original_price, discounted_price, cashback_percent, image, expires_at, total_slots, available_slots, status, is_featured, category, merchant:merchants (business_name)",
     )
     .eq("status", "ACTIVE")
     .gt("expires_at", new Date().toISOString())
