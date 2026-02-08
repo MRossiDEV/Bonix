@@ -11,6 +11,7 @@ type UserAppLayoutProps = {
   userName?: string;
   userEmail?: string;
   userInitials?: string;
+  userAvatarUrl?: string;
 };
 
 type NavItem = {
@@ -69,6 +70,7 @@ export default function UserAppLayout({
   userName = "Aurelia Brooks",
   userEmail = "aurelia@bonix.app",
   userInitials = "AB",
+  userAvatarUrl,
 }: UserAppLayoutProps) {
   const pathname = usePathname();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -162,9 +164,17 @@ export default function UserAppLayout({
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#2A2A2A] bg-[#1E1E1E]"
             aria-label="Open profile menu"
           >
-            <span className="text-xs font-semibold text-[#FF7A00]">
-              {userInitials}
-            </span>
+            {userAvatarUrl ? (
+              <img
+                src={userAvatarUrl}
+                alt="User avatar"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-semibold text-[#FF7A00]">
+                {userInitials}
+              </span>
+            )}
           </button>
         </div>
       </header>
@@ -213,12 +223,25 @@ export default function UserAppLayout({
               onClick={(event) => event.stopPropagation()}
               className="flex h-full w-72 flex-col gap-6 border-r border-[#2A2A2A] bg-[#1E1E1E] px-6 py-8"
             >
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-[#9CA3AF]">
-                  Bonix
-                </p>
-                <p className="mt-3 text-lg font-semibold">{userName}</p>
-                <p className="text-sm text-[#9CA3AF]">{userEmail}</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#121212] text-sm font-semibold text-[#FF7A00]">
+                  {userAvatarUrl ? (
+                    <img
+                      src={userAvatarUrl}
+                      alt="User avatar"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    userInitials
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.4em] text-[#9CA3AF]">
+                    Bonix
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">{userName}</p>
+                  <p className="text-sm text-[#9CA3AF]">{userEmail}</p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">

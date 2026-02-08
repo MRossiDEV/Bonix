@@ -1,12 +1,6 @@
 import AdminAppLayout from "@/app/components/AdminAppLayout";
-
-function getAdminInitials(adminId?: string) {
-  const safeId = typeof adminId === "string" ? adminId : "";
-  const cleaned = safeId.replace(/[^a-zA-Z0-9]/g, " ").trim();
-  if (!cleaned) return "BA";
-  const parts = cleaned.split(/\s+/).slice(0, 2);
-  return parts.map((part) => part[0]?.toUpperCase()).join("");
-}
+import { getAuthProfile } from "@/lib/auth-profile";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminLayout({
   children,
@@ -16,14 +10,20 @@ export default async function AdminLayout({
   params: Promise<{ adminID: string }>;
 }>) {
   const { adminID } = await params;
-  const initials = getAdminInitials(adminID);
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Admin",
+    fallbackEmail: `${adminID}@bonix.app`,
+  });
 
   return (
     <AdminAppLayout
       basePath={`/admin/${adminID}`}
-      adminName="Bonix Admin"
-      adminEmail={`${adminID}@bonix.app`}
-      adminInitials={initials}
+      adminName={profile.name}
+      adminEmail={profile.email}
+      adminInitials={profile.initials}
+      adminAvatarUrl={profile.avatarUrl}
     >
       {children}
     </AdminAppLayout>

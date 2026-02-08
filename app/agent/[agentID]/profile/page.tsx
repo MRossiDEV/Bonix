@@ -1,9 +1,18 @@
 import Link from "next/link";
 
+import { getAuthProfile } from "@/lib/auth-profile";
+import { createClient } from "@/lib/supabase/server";
+
 export default async function AgentProfilePage({
   params,
 }: Readonly<{ params: Promise<{ agentID: string }> }>) {
   const { agentID } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Agent",
+    fallbackEmail: "agent@bonix.app",
+  });
 
   const preferences = ["Notifications", "Escalation rules", "Security", "Support"];
 
@@ -11,12 +20,20 @@ export default async function AgentProfilePage({
     <div className="space-y-6">
       <section className="rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#121212] text-lg font-semibold text-[#38BDF8]">
-            BA
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#121212] text-lg font-semibold text-[#38BDF8]">
+            {profile.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt="Agent avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              profile.initials
+            )}
           </div>
           <div>
-            <p className="text-xl font-semibold">Bonix Agent</p>
-            <p className="text-sm text-[#9CA3AF]">agent@bonix.app</p>
+            <p className="text-xl font-semibold">{profile.name}</p>
+            <p className="text-sm text-[#9CA3AF]">{profile.email}</p>
           </div>
         </div>
       </section>

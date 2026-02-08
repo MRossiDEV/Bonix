@@ -1,9 +1,18 @@
 import Link from "next/link";
 
+import { getAuthProfile } from "@/lib/auth-profile";
+import { createClient } from "@/lib/supabase/server";
+
 export default async function MerchantProfilePage({
   params,
 }: Readonly<{ params: Promise<{ merchantId: string }> }>) {
   const { merchantId } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Merchant",
+    fallbackEmail: "merchant@bonix.app",
+  });
 
   const details = [
     { label: "Primary location", value: "Pocitos, Montevideo" },
@@ -15,12 +24,20 @@ export default async function MerchantProfilePage({
     <div className="space-y-6">
       <section className="rounded-3xl border border-[#262626] bg-[#1A1A1A] p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#111111] text-lg font-semibold text-[#FFB547]">
-            BM
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#111111] text-lg font-semibold text-[#FFB547]">
+            {profile.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt="Merchant avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              profile.initials
+            )}
           </div>
           <div>
-            <p className="text-xl font-semibold">Bonix Merchant</p>
-            <p className="text-sm text-[#A1A1AA]">merchant@bonix.app</p>
+            <p className="text-xl font-semibold">{profile.name}</p>
+            <p className="text-sm text-[#A1A1AA]">{profile.email}</p>
           </div>
         </div>
       </section>

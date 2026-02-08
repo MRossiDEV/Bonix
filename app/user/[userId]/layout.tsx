@@ -1,26 +1,26 @@
 import UserAppLayout from "@/app/components/UserAppLayout";
-
-function getUserInitials(userId?: string) {
-  const safeId = typeof userId === "string" ? userId : "";
-  const cleaned = safeId.replace(/[^a-zA-Z0-9]/g, " ").trim();
-  if (!cleaned) return "BM";
-  const parts = cleaned.split(/\s+/).slice(0, 2);
-  return parts.map((part) => part[0]?.toUpperCase()).join("");
-}
+import { getAuthProfile } from "@/lib/auth-profile";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function UserLayout({
   children,
   params,
 }: Readonly<{ children: React.ReactNode; params: Promise<{ userId: string }> }>) {
   const { userId } = await params;
-  const initials = getUserInitials(userId);
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Member",
+    fallbackEmail: `${userId}@bonix.app`,
+  });
 
   return (
     <UserAppLayout
       basePath={`/user/${userId}`}
-      userName="Bonix Member"
-      userEmail={`${userId}@bonix.app`}
-      userInitials={initials}
+      userName={profile.name}
+      userEmail={profile.email}
+      userInitials={profile.initials}
+      userAvatarUrl={profile.avatarUrl}
     >
       {children}
     </UserAppLayout>

@@ -11,6 +11,7 @@ type AgentAppLayoutProps = {
   agentName?: string;
   agentEmail?: string;
   agentInitials?: string;
+  agentAvatarUrl?: string;
 };
 
 type NavItem = {
@@ -69,6 +70,7 @@ export default function AgentAppLayout({
   agentName = "Bonix Agent",
   agentEmail = "agent@bonix.app",
   agentInitials = "BA",
+  agentAvatarUrl,
 }: AgentAppLayoutProps) {
   const pathname = usePathname();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -162,9 +164,17 @@ export default function AgentAppLayout({
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1F2937] bg-[#111827]"
             aria-label="Open agent menu"
           >
-            <span className="text-xs font-semibold text-[#38BDF8]">
-              {agentInitials}
-            </span>
+            {agentAvatarUrl ? (
+              <img
+                src={agentAvatarUrl}
+                alt="Agent avatar"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-semibold text-[#38BDF8]">
+                {agentInitials}
+              </span>
+            )}
           </button>
         </div>
       </header>
@@ -213,12 +223,25 @@ export default function AgentAppLayout({
               onClick={(event) => event.stopPropagation()}
               className="flex h-full w-72 flex-col gap-6 border-r border-[#1F2937] bg-[#111827] px-6 py-8"
             >
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-[#94A3B8]">
-                  Bonix Agent
-                </p>
-                <p className="mt-3 text-lg font-semibold">{agentName}</p>
-                <p className="text-sm text-[#94A3B8]">{agentEmail}</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#0F172A] text-sm font-semibold text-[#38BDF8]">
+                  {agentAvatarUrl ? (
+                    <img
+                      src={agentAvatarUrl}
+                      alt="Agent avatar"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    agentInitials
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.4em] text-[#94A3B8]">
+                    Bonix Agent
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">{agentName}</p>
+                  <p className="text-sm text-[#94A3B8]">{agentEmail}</p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">

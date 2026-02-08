@@ -1,20 +1,37 @@
 import Link from "next/link";
 
+import { getAuthProfile } from "@/lib/auth-profile";
+import { createClient } from "@/lib/supabase/server";
+
 export default async function UserProfilePage({
   params,
 }: Readonly<{ params: Promise<{ userId: string }> }>) {
   const { userId } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Member",
+    fallbackEmail: "member@bonix.app",
+  });
 
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#121212] text-lg font-semibold text-[#FF7A00]">
-            AB
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#121212] text-lg font-semibold text-[#FF7A00]">
+            {profile.avatarUrl ? (
+              <img
+                src={profile.avatarUrl}
+                alt="User avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              profile.initials
+            )}
           </div>
           <div>
-            <p className="text-xl font-semibold">Bonix Member</p>
-            <p className="text-sm text-[#9CA3AF]">member@bonix.app</p>
+            <p className="text-xl font-semibold">{profile.name}</p>
+            <p className="text-sm text-[#9CA3AF]">{profile.email}</p>
           </div>
         </div>
       </section>

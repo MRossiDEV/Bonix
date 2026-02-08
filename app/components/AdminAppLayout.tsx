@@ -11,6 +11,7 @@ type AdminAppLayoutProps = {
   adminName?: string;
   adminEmail?: string;
   adminInitials?: string;
+  adminAvatarUrl?: string;
 };
 
 type NavItem = {
@@ -69,6 +70,7 @@ export default function AdminAppLayout({
   adminName = "Bonix Admin",
   adminEmail = "admin@bonix.app",
   adminInitials = "BA",
+  adminAvatarUrl,
 }: AdminAppLayoutProps) {
   const pathname = usePathname();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -162,9 +164,17 @@ export default function AdminAppLayout({
             className="flex h-9 w-9 items-center justify-center rounded-full border border-[#1F2937] bg-[#0F172A]"
             aria-label="Open admin menu"
           >
-            <span className="text-xs font-semibold text-[#22C55E]">
-              {adminInitials}
-            </span>
+            {adminAvatarUrl ? (
+              <img
+                src={adminAvatarUrl}
+                alt="Admin avatar"
+                className="h-8 w-8 rounded-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-semibold text-[#22C55E]">
+                {adminInitials}
+              </span>
+            )}
           </button>
         </div>
       </header>
@@ -213,12 +223,25 @@ export default function AdminAppLayout({
               onClick={(event) => event.stopPropagation()}
               className="flex h-full w-72 flex-col gap-6 border-r border-[#1F2937] bg-[#0F172A] px-6 py-8"
             >
-              <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-[#94A3B8]">
-                  Bonix Admin
-                </p>
-                <p className="mt-3 text-lg font-semibold">{adminName}</p>
-                <p className="text-sm text-[#94A3B8]">{adminEmail}</p>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#0B0F14] text-sm font-semibold text-[#22C55E]">
+                  {adminAvatarUrl ? (
+                    <img
+                      src={adminAvatarUrl}
+                      alt="Admin avatar"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    adminInitials
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.4em] text-[#94A3B8]">
+                    Bonix Admin
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">{adminName}</p>
+                  <p className="text-sm text-[#94A3B8]">{adminEmail}</p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">
