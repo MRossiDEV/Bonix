@@ -38,7 +38,7 @@ export default function InstallPage() {
           <p className="text-sm font-semibold">No prompt?</p>
           <ol className="mt-3 space-y-2 text-sm text-[#9CA3AF]">
             <li id="manual">1. Open your browser menu.</li>
-            <li>2. Tap "Add to Home Screen" or "Install App".</li>
+            <li>2. Tap &quot;Add to Home Screen&quot; or &quot;Install App&quot;.</li>
             <li>3. Confirm to finish.</li>
           </ol>
           {requested ? (

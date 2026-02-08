@@ -51,5 +51,5 @@ export default async function PromoDetailPage({ params }: PromoDetailPageProps) 
     return { ...row, merchant } satisfies PromoRow;
   })();
 
-  return <PromoDetailClient promo={mapPromoRowToCard(normalized, 0)} />;
+  return <PromoDetailClient promo={mapPromoRowToCard(normalized)} />;
 }

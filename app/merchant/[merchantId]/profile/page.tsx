@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
@@ -30,9 +33,11 @@ export default async function MerchantProfilePage({
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#111111] text-lg font-semibold text-[#FFB547]">
             {profile.avatarUrl ? (
-              <img
+              <Image
                 src={profile.avatarUrl}
                 alt="Merchant avatar"
+                width={56}
+                height={56}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -101,24 +106,20 @@ export default async function MerchantProfilePage({
       <section className="space-y-3">
         {["Store hours", "Staff permissions", "Security", "Support"].map(
           (item) => (
-            <button
+            <div
               key={item}
-              type="button"
               className="flex w-full items-center justify-between rounded-2xl border border-[#262626] bg-[#1A1A1A] px-4 py-3 text-sm"
             >
               {item}
               <span className="text-[#A1A1AA]">&gt;</span>
-            </button>
+            </div>
           ),
         )}
       </section>
 
-      <button
-        type="button"
-        className="w-full rounded-2xl border border-[#262626] bg-[#111111] py-3 text-sm text-[#FFB547]"
-      >
+      <LogoutButton className="w-full rounded-2xl border border-[#262626] bg-[#111111] py-3 text-sm text-[#FFB547]">
         Logout
-      </button>
+      </LogoutButton>
     </div>
   );
 }

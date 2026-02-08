@@ -27,11 +27,15 @@ const MAX_LIMIT = 50;
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limitParam = searchParams.get("limit");
+  const pageParam = searchParams.get("page");
   const id = searchParams.get("id");
   const limit = limitParam ? Number(limitParam) : 12;
   const safeLimit = Number.isFinite(limit)
     ? Math.min(Math.max(limit, 1), MAX_LIMIT)
     : 12;
+  const parsedPage = pageParam ? Number(pageParam) : 1;
+  const safePage = Number.isFinite(parsedPage) ? Math.max(parsedPage, 1) : 1;
+  const offset = (safePage - 1) * safeLimit;
 
   const admin = createAdminClient();
 
@@ -43,7 +47,7 @@ export async function GET(request: Request) {
     .eq("status", "ACTIVE")
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })
-    .limit(safeLimit);
+    .range(offset, offset + safeLimit - 1);
 
   if (id) {
     query = query.eq("id", id);

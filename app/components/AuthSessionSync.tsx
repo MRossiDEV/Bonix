@@ -12,6 +12,20 @@ export function AuthSessionSync() {
 
   useEffect(() => {
     let active = true;
+    let lastLogAt = 0;
+
+    const logSyncIssue = (message: string, error?: unknown) => {
+      const now = Date.now();
+      if (now - lastLogAt < 60_000) {
+        return;
+      }
+      lastLogAt = now;
+      if (error) {
+        console.warn(message, error);
+      } else {
+        console.warn(message);
+      }
+    };
 
     const syncSession = async () => {
       const supabase = createClient();
@@ -29,32 +43,41 @@ export function AuthSessionSync() {
           return;
         }
       } catch {
-        // Ignore storage errors and continue syncing.
+        logSyncIssue("Auth session sync: sessionStorage unavailable before sync.");
       }
 
-      const response = await fetch("/auth/sync", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          access_token: session.access_token,
-          refresh_token: session.refresh_token,
-        }),
-      });
+      let response: Response | null = null;
+      try {
+        response = await fetch("/auth/sync", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+          }),
+        });
+      } catch (error) {
+        logSyncIssue("Auth session sync: request failed.", error);
+        return;
+      }
 
       if (!active) {
         return;
       }
 
-      if (response.ok) {
-        try {
-          sessionStorage.setItem(SESSION_SYNC_KEY, cacheKey);
-        } catch {
-          // Ignore storage errors.
-        }
-        router.refresh();
+      if (!response.ok) {
+        logSyncIssue("Auth session sync: non-OK response.");
+        return;
       }
+
+      try {
+        sessionStorage.setItem(SESSION_SYNC_KEY, cacheKey);
+      } catch {
+        logSyncIssue("Auth session sync: sessionStorage unavailable after sync.");
+      }
+      router.refresh();
     };
 
     syncSession();

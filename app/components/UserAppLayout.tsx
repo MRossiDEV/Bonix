@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 type UserAppLayoutProps = {
   children: React.ReactNode;
@@ -117,14 +120,16 @@ export default function UserAppLayout({
   }, [sideMenuOpen, avatarMenuOpen]);
 
   useEffect(() => {
-    setSideMenuOpen(false);
-    setAvatarMenuOpen(false);
+    if (sideMenuOpen) setSideMenuOpen(false);
+    if (avatarMenuOpen) setAvatarMenuOpen(false);
   }, [pathname]);
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+    if (sideMenuOpen) setSideMenuOpen(false);
+    if (avatarMenuOpen) setAvatarMenuOpen(false);
   };
 
   return (
@@ -165,9 +170,11 @@ export default function UserAppLayout({
             aria-label="Open profile menu"
           >
             {userAvatarUrl ? (
-              <img
+              <Image
                 src={userAvatarUrl}
                 alt="User avatar"
+                width={32}
+                height={32}
                 className="h-8 w-8 rounded-full object-cover"
               />
             ) : (
@@ -226,9 +233,11 @@ export default function UserAppLayout({
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#121212] text-sm font-semibold text-[#FF7A00]">
                   {userAvatarUrl ? (
-                    <img
+                    <Image
                       src={userAvatarUrl}
                       alt="User avatar"
+                      width={44}
+                      height={44}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -249,6 +258,7 @@ export default function UserAppLayout({
                   <Link
                     key={item.label}
                     href={item.href}
+                    onClick={() => setSideMenuOpen(false)}
                     className="rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
                   >
                     {item.label}
@@ -256,12 +266,9 @@ export default function UserAppLayout({
                 ))}
               </div>
 
-              <button
-                type="button"
-                className="mt-auto rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]"
-              >
+              <LogoutButton className="mt-auto rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]">
                 Logout
-              </button>
+              </LogoutButton>
             </motion.aside>
           </motion.div>
         ) : null}
@@ -288,6 +295,7 @@ export default function UserAppLayout({
               <div className="mt-4 space-y-2">
                 <Link
                   href="/app/profile"
+                  onClick={() => setAvatarMenuOpen(false)}
                   className="block rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
                 >
                   View profile
@@ -298,12 +306,9 @@ export default function UserAppLayout({
                   </p>
                   <p className="mt-2 text-lg font-semibold">$248.60</p>
                 </div>
-                <button
-                  type="button"
-                  className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]"
-                >
+                <LogoutButton className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm text-[#FF7A00]">
                   Logout
-                </button>
+                </LogoutButton>
               </div>
             </motion.div>
           </motion.div>

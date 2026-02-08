@@ -46,24 +46,35 @@ const formatExpiresIn = (expiresAt: string) => {
   return `${h}:${m}:${s}`;
 };
 
+const PAGE_SIZE = 12;
+
 export default function UserFeedPage() {
   const [promos, setPromos] = useState<FeedPromo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     let active = true;
 
     const fetchPromos = async () => {
-      setLoading(true);
-      const res = await fetch("/api/promos?limit=12");
+      if (page === 1) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+      setErrorMessage(null);
+
+      const res = await fetch(`/api/promos?limit=${PAGE_SIZE}&page=${page}`);
       if (!res.ok) throw new Error("Failed to load promos");
 
       const { promos } = (await res.json()) as { promos: PromoRow[] };
       if (!active) return;
 
-      const mapped = promos.map((row, index) => {
-        const card = mapPromoRowToCard(row, index);
+      const mapped = promos.map((row) => {
+        const card = mapPromoRowToCard(row);
 
         const expiringSoon =
           new Date(row.expires_at).getTime() - Date.now() < 1000 * 60 * 60 * 3;
@@ -77,20 +88,23 @@ export default function UserFeedPage() {
         } satisfies FeedPromo;
       });
 
-      setPromos(mapped);
+      setPromos((current) => (page === 1 ? mapped : [...current, ...mapped]));
+      setHasMore(promos.length === PAGE_SIZE);
       setLoading(false);
+      setLoadingMore(false);
     };
 
     fetchPromos().catch((err) => {
       if (!active) return;
       setErrorMessage(err.message);
       setLoading(false);
+      setLoadingMore(false);
     });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [page]);
 
   return (
     <section className="space-y-8 pb-24">
@@ -235,6 +249,19 @@ export default function UserFeedPage() {
             </motion.article>
           );
         })}
+
+        {!loading && !errorMessage && hasMore ? (
+          <div className="px-4">
+            <button
+              type="button"
+              onClick={() => setPage((current) => current + 1)}
+              disabled={loadingMore}
+              className="w-full rounded-2xl border border-[#2A2A2A] bg-[#1E1E1E] py-3 text-sm font-semibold text-[#FAFAFA]"
+            >
+              {loadingMore ? "Loading more..." : "Load more"}
+            </button>
+          </div>
+        ) : null}
       </div>
     </section>
   );

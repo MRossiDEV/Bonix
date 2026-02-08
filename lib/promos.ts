@@ -53,7 +53,7 @@ function getPriceLabel(discountedPrice: number): string {
   return "$$$$";
 }
 
-export function mapPromoRowToCard(row: PromoRow, index: number): PromoCardData {
+export function mapPromoRowToCard(row: PromoRow): PromoCardData {
   const originalPrice = toNumber(row.original_price);
   const discountedPrice = toNumber(row.discounted_price);
   const cashbackPercent = toNumber(row.cashback_percent);

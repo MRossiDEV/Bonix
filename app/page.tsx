@@ -77,7 +77,7 @@ export default function LandingPage() {
             href="/install"
             className="block w-full rounded-2xl border border-[#2A2A2A] py-4 text-center text-[#FAFAFA]"
           >
-            I'm a business
+            I&apos;m a business
           </Link>
           <div className="grid gap-3 sm:grid-cols-2">
             <Link

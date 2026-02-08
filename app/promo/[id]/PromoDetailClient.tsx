@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -50,10 +51,13 @@ export function PromoDetailClient({ promo }: PromoDetailClientProps) {
       {/* Hero */}
       <div className="relative mt-6 aspect-[9/16] overflow-hidden rounded-[28px] bg-[#1E1E1E]">
         {promo.imageUrl && (
-          <img
+          <Image
             src={promo.imageUrl}
             alt={promo.title}
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-transparent" />

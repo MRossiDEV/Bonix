@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
@@ -26,9 +29,11 @@ export default async function AgentProfilePage({
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#121212] text-lg font-semibold text-[#38BDF8]">
             {profile.avatarUrl ? (
-              <img
+              <Image
                 src={profile.avatarUrl}
                 alt="Agent avatar"
+                width={56}
+                height={56}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -102,23 +107,19 @@ export default async function AgentProfilePage({
 
       <section className="space-y-3">
         {preferences.map((item) => (
-          <button
+          <div
             key={item}
-            type="button"
             className="flex w-full items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#1E1E1E] px-4 py-3 text-sm"
           >
             {item}
             <span className="text-[#9CA3AF]">›</span>
-          </button>
+          </div>
         ))}
       </section>
 
-      <button
-        type="button"
-        className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] py-3 text-sm text-[#38BDF8]"
-      >
+      <LogoutButton className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] py-3 text-sm text-[#38BDF8]">
         Logout
-      </button>
+      </LogoutButton>
     </div>
   );
 }

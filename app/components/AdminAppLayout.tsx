@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
+
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 type AdminAppLayoutProps = {
   children: React.ReactNode;
@@ -117,14 +120,16 @@ export default function AdminAppLayout({
   }, [sideMenuOpen, avatarMenuOpen]);
 
   useEffect(() => {
-    setSideMenuOpen(false);
-    setAvatarMenuOpen(false);
+    if (sideMenuOpen) setSideMenuOpen(false);
+    if (avatarMenuOpen) setAvatarMenuOpen(false);
   }, [pathname]);
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+    if (sideMenuOpen) setSideMenuOpen(false);
+    if (avatarMenuOpen) setAvatarMenuOpen(false);
   };
 
   return (
@@ -165,9 +170,11 @@ export default function AdminAppLayout({
             aria-label="Open admin menu"
           >
             {adminAvatarUrl ? (
-              <img
+              <Image
                 src={adminAvatarUrl}
                 alt="Admin avatar"
+                width={32}
+                height={32}
                 className="h-8 w-8 rounded-full object-cover"
               />
             ) : (
@@ -226,9 +233,11 @@ export default function AdminAppLayout({
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#0B0F14] text-sm font-semibold text-[#22C55E]">
                   {adminAvatarUrl ? (
-                    <img
+                    <Image
                       src={adminAvatarUrl}
                       alt="Admin avatar"
+                      width={44}
+                      height={44}
                       className="h-full w-full object-cover"
                     />
                   ) : (
@@ -249,6 +258,7 @@ export default function AdminAppLayout({
                   <Link
                     key={item.label}
                     href={item.href}
+                    onClick={() => setSideMenuOpen(false)}
                     className="rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
                   >
                     {item.label}
@@ -256,12 +266,9 @@ export default function AdminAppLayout({
                 ))}
               </div>
 
-              <button
-                type="button"
-                className="mt-auto rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm text-[#22C55E]"
-              >
+              <LogoutButton className="mt-auto rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm text-[#22C55E]">
                 Logout
-              </button>
+              </LogoutButton>
             </motion.aside>
           </motion.div>
         ) : null}
@@ -288,6 +295,7 @@ export default function AdminAppLayout({
               <div className="mt-4 space-y-2">
                 <Link
                   href={`${normalizedBasePath}/profile`}
+                  onClick={() => setAvatarMenuOpen(false)}
                   className="block rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
                 >
                   View profile
@@ -298,12 +306,9 @@ export default function AdminAppLayout({
                   </p>
                   <p className="mt-2 text-lg font-semibold">7</p>
                 </div>
-                <button
-                  type="button"
-                  className="w-full rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm text-[#22C55E]"
-                >
+                <LogoutButton className="w-full rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm text-[#22C55E]">
                   Logout
-                </button>
+                </LogoutButton>
               </div>
             </motion.div>
           </motion.div>

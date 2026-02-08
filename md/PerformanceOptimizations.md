@@ -1,0 +1,22 @@
+## 🔧 CODEBASE CLEANUP TASK LIST ###
+### 🚀 Performance Improvements
+- [ ] [app/components/AdminAppLayout.tsx](app/components/AdminAppLayout.tsx#L120-L121) - avoid synchronous `setState` in the `pathname` effect; close menus from navigation click handlers or guard updates to prevent cascading renders.
+- [ ] [app/components/AgentAppLayout.tsx](app/components/AgentAppLayout.tsx#L120-L121) - avoid synchronous `setState` in the `pathname` effect; close menus from navigation click handlers or guard updates to prevent cascading renders.
+- [ ] [app/components/MerchantAppLayout.tsx](app/components/MerchantAppLayout.tsx#L120-L121) - avoid synchronous `setState` in the `pathname` effect; close menus from navigation click handlers or guard updates to prevent cascading renders.
+- [ ] [app/components/UserAppLayout.tsx](app/components/UserAppLayout.tsx#L120-L121) - avoid synchronous `setState` in the `pathname` effect; close menus from navigation click handlers or guard updates to prevent cascading renders.
+- [ ] [app/components/AdminAppLayout.tsx](app/components/AdminAppLayout.tsx#L168) - replace avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/AdminAppLayout.tsx](app/components/AdminAppLayout.tsx#L229) - replace side menu avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/AgentAppLayout.tsx](app/components/AgentAppLayout.tsx#L168) - replace avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/AgentAppLayout.tsx](app/components/AgentAppLayout.tsx#L229) - replace side menu avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/MerchantAppLayout.tsx](app/components/MerchantAppLayout.tsx#L168) - replace avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/MerchantAppLayout.tsx](app/components/MerchantAppLayout.tsx#L229) - replace side menu avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/UserAppLayout.tsx](app/components/UserAppLayout.tsx#L168) - replace avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/components/UserAppLayout.tsx](app/components/UserAppLayout.tsx#L229) - replace side menu avatar `<img>` with `next/image` for optimized loading and caching.
+- [ ] [app/admin/[adminID]/profile/page.tsx](app/admin/[adminID]/profile/page.tsx#L29) - replace profile `<img>` with `next/image` to improve LCP.
+- [ ] [app/agent/[agentID]/profile/page.tsx](app/agent/[agentID]/profile/page.tsx#L29) - replace profile `<img>` with `next/image` to improve LCP.
+- [ ] [app/merchant/[merchantId]/profile/page.tsx](app/merchant/[merchantId]/profile/page.tsx#L33) - replace profile `<img>` with `next/image` to improve LCP.
+- [ ] [app/user/[userId]/profile/page.tsx](app/user/[userId]/profile/page.tsx#L27) - replace profile `<img>` with `next/image` to improve LCP.
+- [ ] [app/promo/[id]/PromoDetailClient.tsx](app/promo/[id]/PromoDetailClient.tsx#L53) - replace hero `<img>` with `next/image` to improve LCP.
+- [ ] [app/components/PromoFeed.tsx](app/components/PromoFeed.tsx#L160) - wrap `PromoCard` with `React.memo` to avoid re-rendering the full list when `modalOpen` toggles.
+- [ ] [app/user/[userId]/feed/page.tsx](app/user/[userId]/feed/page.tsx#L123) - add pagination or list virtualization for `promos.map()` when the feed grows.
+- [ ] [app/components/PromoFeed.tsx](app/components/PromoFeed.tsx#L135) - consider pagination or list virtualization for `items.map()` in the promo feed.

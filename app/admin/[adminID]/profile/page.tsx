@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+
+import { LogoutButton } from "@/app/components/LogoutButton";
 
 import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
@@ -26,9 +29,11 @@ export default async function AdminProfilePage({
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#0B0F14] text-lg font-semibold text-[#22C55E]">
             {profile.avatarUrl ? (
-              <img
+              <Image
                 src={profile.avatarUrl}
                 alt="Admin avatar"
+                width={56}
+                height={56}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -82,23 +87,19 @@ export default async function AdminProfilePage({
 
       <section className="space-y-3">
         {settings.map((item) => (
-          <button
+          <div
             key={item}
-            type="button"
             className="flex w-full items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0F172A] px-4 py-3 text-sm"
           >
             {item}
             <span className="text-[#94A3B8]">›</span>
-          </button>
+          </div>
         ))}
       </section>
 
-      <button
-        type="button"
-        className="w-full rounded-2xl border border-[#1F2937] bg-[#0B0F14] py-3 text-sm text-[#22C55E]"
-      >
+      <LogoutButton className="w-full rounded-2xl border border-[#1F2937] bg-[#0B0F14] py-3 text-sm text-[#22C55E]">
         Logout
-      </button>
+      </LogoutButton>
     </div>
   );
 }

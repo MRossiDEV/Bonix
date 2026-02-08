@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import { useRouter } from "next/navigation";
 
 import { mapPromoRowToCard, PromoCardData } from "@/lib/promos";
@@ -77,7 +77,7 @@ export function PromoFeed({
         return { ...row, merchant };
       });
 
-      setItems(promos.map((row: PromoRow, index) => mapPromoRowToCard(row, index)));
+      setItems(promos.map((row: PromoRow) => mapPromoRowToCard(row)));
       setLoading(false);
     };
 
@@ -93,9 +93,9 @@ export function PromoFeed({
     };
   }, [limit]);
 
-  const handleRestrictedAction = () => {
+  const handleRestrictedAction = useCallback(() => {
     setModalOpen(true);
-  };
+  }, []);
 
   const handleInstall = async () => {
     setModalOpen(false);
@@ -157,7 +157,11 @@ type PromoCardProps = {
   onRestrictedAction: () => void;
 };
 
-function PromoCard({ promo, gradientClass, onRestrictedAction }: PromoCardProps) {
+const PromoCard = memo(function PromoCard({
+  promo,
+  gradientClass,
+  onRestrictedAction,
+}: PromoCardProps) {
   return (
     <article
       data-preview={promo.previewMode ? "true" : "false"}
@@ -215,4 +219,4 @@ function PromoCard({ promo, gradientClass, onRestrictedAction }: PromoCardProps)
       </motion.button>
     </article>
   );
-}
+});
