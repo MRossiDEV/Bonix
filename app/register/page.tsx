@@ -70,9 +70,8 @@ export default function RegisterPage() {
 
     try {
       const supabase = createClient();
-      const appOrigin = config.appUrl || window.location.origin;
+      const appOrigin = window.location.origin || config.appUrl;
       const redirectTo = new URL("/auth/callback", appOrigin);
-      redirectTo.searchParams.set("next", "/feed");
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
