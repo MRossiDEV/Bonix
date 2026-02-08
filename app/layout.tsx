@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { AuthSessionSync } from "@/app/components/AuthSessionSync";
 import { ServiceWorkerRegistration } from "@/app/components/ServiceWorkerRegistration";
 
 const poppins = Poppins({
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
         <ServiceWorkerRegistration />
+        <AuthSessionSync />
         {children}
       </body>
     </html>

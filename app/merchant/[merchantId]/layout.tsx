@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 import MerchantAppLayout from "@/app/components/MerchantAppLayout";
 import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +11,9 @@ export default async function MerchantLayout({
   const { merchantId } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  if (!data.user) {
+    redirect("/login");
+  }
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });
