@@ -1,5 +1,5 @@
 import UserAppLayout from "@/app/components/UserAppLayout";
-import { getAuthProfile } from "@/lib/auth-profile";
+import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function UserLayout({
@@ -9,6 +9,10 @@ export default async function UserLayout({
   const { userId } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const updates = getIdentityMetadataUpdates(data.user);
+  if (updates) {
+    await supabase.auth.updateUser({ data: updates });
+  }
   const profile = getAuthProfile(data.user, {
     fallbackName: "Bonix Member",
     fallbackEmail: `${userId}@bonix.app`,

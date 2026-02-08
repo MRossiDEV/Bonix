@@ -1,5 +1,5 @@
 import AdminAppLayout from "@/app/components/AdminAppLayout";
-import { getAuthProfile } from "@/lib/auth-profile";
+import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminLayout({
@@ -12,6 +12,10 @@ export default async function AdminLayout({
   const { adminID } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const updates = getIdentityMetadataUpdates(data.user);
+  if (updates) {
+    await supabase.auth.updateUser({ data: updates });
+  }
   const profile = getAuthProfile(data.user, {
     fallbackName: "Bonix Admin",
     fallbackEmail: `${adminID}@bonix.app`,

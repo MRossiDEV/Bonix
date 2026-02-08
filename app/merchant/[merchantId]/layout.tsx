@@ -1,5 +1,5 @@
 import MerchantAppLayout from "@/app/components/MerchantAppLayout";
-import { getAuthProfile } from "@/lib/auth-profile";
+import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function MerchantLayout({
@@ -9,6 +9,10 @@ export default async function MerchantLayout({
   const { merchantId } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const updates = getIdentityMetadataUpdates(data.user);
+  if (updates) {
+    await supabase.auth.updateUser({ data: updates });
+  }
   const profile = getAuthProfile(data.user, {
     fallbackName: "Bonix Merchant",
     fallbackEmail: `${merchantId}@bonix.app`,

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getAuthProfile } from "@/lib/auth-profile";
+import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function MerchantProfilePage({
@@ -9,6 +9,10 @@ export default async function MerchantProfilePage({
   const { merchantId } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const updates = getIdentityMetadataUpdates(data.user);
+  if (updates) {
+    await supabase.auth.updateUser({ data: updates });
+  }
   const profile = getAuthProfile(data.user, {
     fallbackName: "Bonix Merchant",
     fallbackEmail: "merchant@bonix.app",

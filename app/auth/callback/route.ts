@@ -35,6 +35,37 @@ export async function GET(request: NextRequest) {
 
   const { data } = await supabase.auth.getUser();
   if (data.user) {
+    const currentMetadata = (data.user.user_metadata ?? {}) as {
+      full_name?: string;
+      name?: string;
+      avatar_url?: string;
+      picture?: string;
+    };
+    const identity =
+      data.user.identities?.find((entry) => entry?.provider === "google") ??
+      data.user.identities?.[0];
+    const identityData = (identity?.identity_data ?? {}) as {
+      full_name?: string;
+      name?: string;
+      avatar_url?: string;
+      picture?: string;
+    };
+    const updates: Record<string, string> = {};
+    const nextName = identityData.full_name || identityData.name;
+    const nextAvatar = identityData.avatar_url || identityData.picture;
+
+    if (nextName && nextName !== currentMetadata.full_name) {
+      updates.full_name = nextName;
+    }
+
+    if (nextAvatar && nextAvatar !== currentMetadata.avatar_url) {
+      updates.avatar_url = nextAvatar;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await supabase.auth.updateUser({ data: updates });
+    }
+
     response = NextResponse.redirect(
       new URL(`/user/${data.user.id}/feed`, requestUrl.origin)
     );
