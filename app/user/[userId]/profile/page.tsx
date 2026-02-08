@@ -14,6 +14,13 @@ export default async function UserProfilePage({
   const { data } = await supabase.auth.getUser();
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
+    await supabase.auth.updateUser({ data: updates });
+  }
+
+  const profile = getAuthProfile(data.user, {
+    fallbackName: "Bonix Member",
+    fallbackEmail: "member@bonix.app",
+  });
 
   const preferences = [
     "Payment methods",
@@ -100,12 +107,6 @@ export default async function UserProfilePage({
       <LogoutButton className="w-full rounded-2xl border border-[#2A2A2A] bg-[#121212] py-3 text-sm text-[#FF7A00]">
         Logout
       </LogoutButton>
-    </div>
-  );
-}
-      >
-        Logout
-      </button>
     </div>
   );
 }
