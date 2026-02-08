@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/feedss";
+  const next = requestUrl.searchParams.get("next") ?? "/feed";
 
   if (!code) {
     return NextResponse.redirect(new URL("/login", requestUrl.origin));
@@ -18,20 +18,24 @@ export async function GET(request: NextRequest) {
     return response;
   }
 
+  const responseCookies: Array<{ name: string; value: string; options?: Parameters<NextResponse["cookies"]["set"]>[2] }> = [];
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
-        );
+      setAll(nextCookies) {
+        nextCookies.forEach(({ name, value, options }) => {
+          responseCookies.push({ name, value, options });
+        });
       },
     },
   });
 
-  await supabase.auth.exchangeCodeForSession(code);
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    return NextResponse.redirect(new URL("/login", requestUrl.origin));
+  }
 
   const { data } = await supabase.auth.getUser();
   if (data.user) {
@@ -70,6 +74,10 @@ export async function GET(request: NextRequest) {
       new URL(`/user/${data.user.id}/feed`, requestUrl.origin)
     );
   }
+
+  responseCookies.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options);
+  });
 
   return response;
 }

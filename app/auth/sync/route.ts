@@ -17,19 +17,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing session tokens." }, { status: 400 });
   }
 
-  let response = NextResponse.next({ request });
-
+  const cookiesToSet: Array<{ name: string; value: string; options?: Parameters<NextResponse["cookies"]["set"]>[2] }> = [];
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
-        );
+      setAll(nextCookies) {
+        nextCookies.forEach(({ name, value, options }) => {
+          cookiesToSet.push({ name, value, options });
+        });
       },
     },
   });
@@ -43,14 +40,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 
-  const jsonResponse = NextResponse.json({
+  const response = NextResponse.json({
     ok: true,
     userId: data.user?.id ?? null,
   });
 
-  response.cookies.getAll().forEach((cookie) => {
-    jsonResponse.cookies.set(cookie);
+  cookiesToSet.forEach(({ name, value, options }) => {
+    response.cookies.set(name, value, options);
   });
 
-  return jsonResponse;
+  return response;
 }
