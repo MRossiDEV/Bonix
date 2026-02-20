@@ -14,6 +14,15 @@ export default async function MerchantLayout({
   if (!data.user) {
     redirect("/login");
   }
+  const { data: merchantRecord, error: merchantError } = await supabase
+    .from("merchants")
+    .select("status")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
+
+  if (merchantError || !merchantRecord || merchantRecord.status !== "ACTIVE") {
+    redirect(`/user/${data.user.id}/profile`);
+  }
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });

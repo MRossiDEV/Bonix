@@ -28,14 +28,14 @@ export default function LandingPage() {
       </div>
 
       <section className="relative flex h-screen flex-col items-center justify-center px-6 text-center">
-        <motion.p
+        {/* <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-sm uppercase tracking-[0.4em] text-[#9CA3AF]"
         >
           montevideo
-        </motion.p>
+        </motion.p> */}
         <motion.h1
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}

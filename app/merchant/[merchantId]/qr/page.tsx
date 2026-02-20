@@ -38,6 +38,19 @@ const paymentLabels: Record<PaymentType, string> = {
   [PaymentType.PARTIAL_WALLET]: "Split credits + cash",
 };
 
+const normalizeToken = (rawValue: string) => {
+  const trimmed = rawValue.trim();
+  if (!trimmed) return "";
+
+  try {
+    const parsed = new URL(trimmed);
+    const tokenParam = parsed.searchParams.get("token");
+    return tokenParam ? tokenParam.trim() : trimmed;
+  } catch {
+    return trimmed;
+  }
+};
+
 export default function MerchantQrPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -78,7 +91,7 @@ export default function MerchantQrPage() {
 
   const handleValidate = useCallback(
     async (tokenOverride?: string) => {
-      const token = tokenOverride ?? tokenInput.trim();
+      const token = normalizeToken(tokenOverride ?? tokenInput);
       if (!token || isValidating) return;
 
       setIsValidating(true);
@@ -154,7 +167,8 @@ export default function MerchantQrPage() {
 
         try {
           const codes = await detector.detect(videoRef.current);
-          const value = codes?.[0]?.rawValue;
+          const rawValue = codes?.[0]?.rawValue;
+          const value = rawValue ? normalizeToken(rawValue) : "";
           if (value && value !== lastScannedRef.current) {
             lastScannedRef.current = value;
             setTokenInput(value);

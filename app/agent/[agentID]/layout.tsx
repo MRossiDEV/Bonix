@@ -17,6 +17,19 @@ export default async function AgentLayout({
   if (!data.user) {
     redirect("/login");
   }
+  const { data: agentRecord, error: agentError } = await supabase
+    .from("agents")
+    .select("status")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
+
+  if (agentError || !agentRecord || agentRecord.status !== "ACTIVE") {
+    redirect(`/user/${data.user.id}/agent/apply`);
+  }
+
+  if (data.user.id !== agentID) {
+    redirect(`/agent/${data.user.id}/dashboard`);
+  }
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });

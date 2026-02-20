@@ -40,6 +40,11 @@ const navItems: NavItem[] = [
     icon: ({ active }) => <StoreIcon active={active} />,
   },
   {
+    path: "/agents",
+    label: "Agents",
+    icon: ({ active }) => <AgentsIcon active={active} />,
+  },
+  {
     path: "/promos",
     label: "Promos",
     icon: ({ active }) => <TagIcon active={active} />,
@@ -55,16 +60,22 @@ const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
   "/users": "Users",
   "/merchants": "Merchants",
+  "/agents": "Agents",
   "/promos": "Promos",
   "/profile": "Profile",
 };
 
 const sideMenuItems = [
-  { label: "Admin profile", path: "/profile" },
-  { label: "Policy center", path: "/dashboard" },
-  { label: "Risk monitor", path: "/dashboard" },
-  { label: "Settings", path: "/profile" },
-  { label: "Support", path: "/profile" },
+  { label: "Dashboard", path: "/dashboard" },
+  { label: "Users", path: "/users" },
+  { label: "Merchants", path: "/merchants" },
+  { label: "Agents", path: "/agents" },
+  { label: "Promos", path: "/promos" },
+  { label: "Approvals", path: "/approvals" },
+  { label: "Content & Categories", path: "/content" },
+  { label: "Reports", path: "/reports" },
+  { label: "System", path: "/system" },
+  { label: "Audit Logs", path: "/audit-logs" },
 ];
 
 export default function AdminAppLayout({
@@ -391,6 +402,26 @@ function StoreIcon({ active }: { active: boolean }) {
       <path d="M3 9l1.5-4.5h15L21 9" />
       <path d="M4 9v10h16V9" />
       <path d="M9 19v-6h6v6" />
+    </svg>
+  );
+}
+
+function AgentsIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className={`h-5 w-5 ${active ? "text-[#22C55E]" : "text-current"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M8 11a3 3 0 100-6 3 3 0 000 6z" />
+      <path d="M16 13a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+      <path d="M2.5 20c1.6-3 4.4-4.5 7.5-4.5" />
+      <path d="M13 20c.8-2 2.5-3.5 4.5-4" />
     </svg>
   );
 }

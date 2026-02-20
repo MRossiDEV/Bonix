@@ -12,6 +12,11 @@ export default async function AgentProfilePage({
   const { agentID } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const { data: merchantRecord } = await supabase
+    .from("merchants")
+    .select("status")
+    .eq("user_id", data.user?.id ?? "")
+    .maybeSingle();
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });
@@ -20,6 +25,18 @@ export default async function AgentProfilePage({
     fallbackName: "Bonix Agent",
     fallbackEmail: "agent@bonix.app",
   });
+
+  const isMerchantActive = merchantRecord?.status === "ACTIVE";
+  const isMerchantApply = !merchantRecord;
+  const merchantStatusLabel = isMerchantApply
+    ? "APPLY"
+    : merchantRecord.status === "PENDING"
+      ? "PENDING APPROVAL"
+      : merchantRecord.status === "REJECTED"
+        ? "REJECTED"
+        : merchantRecord.status === "ACTIVE"
+          ? "ACCEPTED"
+          : merchantRecord.status;
 
   const preferences = ["Notifications", "Escalation rules", "Security", "Support"];
 
@@ -68,13 +85,30 @@ export default async function AgentProfilePage({
             <span>Admin</span>
             <span className="text-xs text-[#9CA3AF]">Accepted</span>
           </Link>
-          <Link
-            href={`/merchant/${agentID}/dashboard`}
-            className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
-          >
-            <span>Merchant</span>
-            <span className="text-xs text-[#9CA3AF]">Accepted</span>
-          </Link>
+          {isMerchantActive ? (
+            <Link
+              href={`/merchant/${agentID}/dashboard`}
+              className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
+            >
+              <span>Merchant</span>
+              <span className="text-xs text-[#9CA3AF]">ACCEPTED</span>
+            </Link>
+          ) : isMerchantApply ? (
+            <Link
+              href={`/user/${agentID}/apply`}
+              className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
+            >
+              <span>Merchant</span>
+              <span className="text-xs text-[#9CA3AF]">{merchantStatusLabel}</span>
+            </Link>
+          ) : (
+            <div className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm opacity-70">
+              <span>Merchant</span>
+              <span className="text-xs text-[#9CA3AF]">
+                {merchantStatusLabel}
+              </span>
+            </div>
+          )}
           <Link
             href={`/user/${agentID}/feed`}
             className="flex items-center justify-between rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"

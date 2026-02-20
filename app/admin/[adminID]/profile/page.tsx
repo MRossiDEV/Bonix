@@ -12,6 +12,11 @@ export default async function AdminProfilePage({
   const { adminID } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
+  const { data: merchantRecord } = await supabase
+    .from("merchants")
+    .select("status")
+    .eq("user_id", data.user?.id ?? "")
+    .maybeSingle();
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });
@@ -20,6 +25,18 @@ export default async function AdminProfilePage({
     fallbackName: "Bonix Admin",
     fallbackEmail: "admin@bonix.app",
   });
+
+  const isMerchantActive = merchantRecord?.status === "ACTIVE";
+  const isMerchantApply = !merchantRecord;
+  const merchantStatusLabel = isMerchantApply
+    ? "APPLY"
+    : merchantRecord.status === "PENDING"
+      ? "PENDING APPROVAL"
+      : merchantRecord.status === "REJECTED"
+        ? "REJECTED"
+        : merchantRecord.status === "ACTIVE"
+          ? "ACCEPTED"
+          : merchantRecord.status;
 
   const settings = ["Compliance", "Security", "Risk alerts", "Support"];
 
@@ -61,13 +78,30 @@ export default async function AdminProfilePage({
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Link
-            href={`/merchant/${adminID}/dashboard`}
-            className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
-          >
-            <span>Merchant</span>
-            <span className="text-xs text-[#94A3B8]">Accepted</span>
-          </Link>
+          {isMerchantActive ? (
+            <Link
+              href={`/merchant/${adminID}/dashboard`}
+              className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
+            >
+              <span>Merchant</span>
+              <span className="text-xs text-[#94A3B8]">ACCEPTED</span>
+            </Link>
+          ) : isMerchantApply ? (
+            <Link
+              href={`/user/${adminID}/apply`}
+              className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
+            >
+              <span>Merchant</span>
+              <span className="text-xs text-[#94A3B8]">{merchantStatusLabel}</span>
+            </Link>
+          ) : (
+            <div className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm opacity-70">
+              <span>Merchant</span>
+              <span className="text-xs text-[#94A3B8]">
+                {merchantStatusLabel}
+              </span>
+            </div>
+          )}
           <Link
             href={`/user/${adminID}/feed`}
             className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"

@@ -62,36 +62,68 @@ export interface Database {
           updated_at?: string
         }
       }
+      user_roles: {
+        Row: {
+          user_id: string
+          role: UserRole
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          role: UserRole
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          role?: UserRole
+          created_at?: string
+        }
+      }
       merchants: {
         Row: {
           id: string
+          user_id: string
           email: string
           business_name: string
+          business_category: string | null
+          locations: string[] | null
           contact_name: string
           phone: string
           address: string | null
+          short_description: string | null
+          terms_accepted_at: string | null
           status: string
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
+          user_id: string
           email: string
           business_name: string
+          business_category?: string | null
+          locations?: string[] | null
           contact_name: string
           phone: string
           address?: string | null
+          short_description?: string | null
+          terms_accepted_at?: string | null
           status?: string
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
+          user_id?: string
           email?: string
           business_name?: string
+          business_category?: string | null
+          locations?: string[] | null
           contact_name?: string
           phone?: string
           address?: string | null
+          short_description?: string | null
+          terms_accepted_at?: string | null
           status?: string
           created_at?: string
           updated_at?: string

@@ -294,7 +294,7 @@ export default function UserAppLayout({
               <p className="text-sm font-semibold">Quick menu</p>
               <div className="mt-4 space-y-2">
                 <Link
-                  href="/app/profile"
+                  href={`${normalizedBasePath}/profile`}
                   onClick={() => setAvatarMenuOpen(false)}
                   className="block rounded-2xl border border-[#2A2A2A] bg-[#121212] px-4 py-3 text-sm"
                 >

@@ -22,13 +22,14 @@ export async function requireAdmin(): Promise<AdminContext> {
     return { error: { status: 401, message: 'Unauthorized' } }
   }
 
-  const { data: userProfile } = await admin
-    .from('users')
-    .select('id, role')
-    .eq('id', user.id)
+  const { data: adminRole } = await admin
+    .from('user_roles')
+    .select('role')
+    .eq('user_id', user.id)
+    .eq('role', 'ADMIN')
     .maybeSingle()
 
-  if (!userProfile || userProfile.role !== 'ADMIN') {
+  if (!adminRole) {
     return { error: { status: 403, message: 'Forbidden' } }
   }
 
