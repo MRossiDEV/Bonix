@@ -13,7 +13,7 @@ type AgentRecord = {
     name: string;
     email: string;
     phone: string | null;
-    created_at: string;
+    createdAt: string;
     roles: string[];
   } | null;
 };
@@ -44,23 +44,27 @@ export default async function AdminAgentsPage() {
     );
   }
 
-  const agentRows: AgentRecord[] = (agents ?? []).map((agent) => ({
-    id: agent.id,
-    email: agent.email,
-    region: agent.region,
-    status: agent.status,
-    created_at: agent.created_at,
-    user: agent.user
-      ? {
-          id: agent.user.id,
-          name: agent.user.name,
-          email: agent.user.email,
-          phone: agent.user.phone,
-          created_at: agent.user.created_at,
-          roles: agent.user.user_roles?.map((role) => role.role) ?? [],
-        }
-      : null,
-  }));
+  const agentRows: AgentRecord[] = (agents ?? []).map((agent) => {
+    const user = Array.isArray(agent.user) ? agent.user[0] : agent.user;
+
+    return {
+      id: agent.id,
+      email: agent.email,
+      region: agent.region,
+      status: agent.status,
+      created_at: agent.created_at,
+      user: user
+        ? {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            createdAt: user.created_at,
+            roles: user.user_roles?.map((role) => role.role) ?? [],
+          }
+        : null,
+    };
+  });
 
   const pendingRequests = agentRows
     .filter((agent) => agent.status === "PENDING")

@@ -56,26 +56,32 @@ export default async function AdminMerchantsPage() {
 
   const pendingRequests: MerchantRequest[] = (merchants ?? [])
     .filter((merchant) => merchant.status === "PENDING")
-    .map((merchant) => ({
-      id: merchant.id,
-      email: merchant.email,
-      businessName: merchant.business_name,
-      contactName: merchant.contact_name,
-      phone: merchant.phone,
-      address: merchant.address,
-      status: merchant.status,
-      createdAt: merchant.created_at,
-      user: merchant.user
-        ? {
-            id: merchant.user.id,
-            name: merchant.user.name,
-            email: merchant.user.email,
-            phone: merchant.user.phone,
-            createdAt: merchant.user.created_at,
-            roles: merchant.user.user_roles?.map((role) => role.role) ?? [],
-          }
-        : null,
-    }));
+    .map((merchant) => {
+      const user = Array.isArray(merchant.user)
+        ? merchant.user[0]
+        : merchant.user;
+
+      return {
+        id: merchant.id,
+        email: merchant.email,
+        businessName: merchant.business_name,
+        contactName: merchant.contact_name,
+        phone: merchant.phone,
+        address: merchant.address,
+        status: merchant.status,
+        createdAt: merchant.created_at,
+        user: user
+          ? {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              phone: user.phone,
+              createdAt: user.created_at,
+              roles: user.user_roles?.map((role) => role.role) ?? [],
+            }
+          : null,
+      };
+    });
 
   const merchantSummaries: MerchantSummary[] = (merchants ?? []).map(
     (merchant) => ({
