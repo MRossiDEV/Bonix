@@ -6,17 +6,28 @@ import { LogoutButton } from "@/app/components/LogoutButton";
 import { getAuthProfile, getIdentityMetadataUpdates } from "@/lib/auth-profile";
 import { createClient } from "@/lib/supabase/server";
 
+type MerchantProfile = {
+  id: string;
+  business_name: string | null;
+  status: string;
+};
+
+function isMerchantAcceptedStatus(status: string | null | undefined): boolean {
+  const normalized = String(status ?? "").toUpperCase();
+  return normalized === "ACTIVE" || normalized === "APPROVED";
+}
+
 export default async function AdminProfilePage({
   params,
 }: Readonly<{ params: Promise<{ adminID: string }> }>) {
   const { adminID } = await params;
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
-  const { data: merchantRecord } = await supabase
+  const { data: merchantRecords } = await supabase
     .from("merchants")
-    .select("status")
+    .select("id, business_name, status")
     .eq("user_id", data.user?.id ?? "")
-    .maybeSingle();
+    .order("created_at", { ascending: false });
   const updates = getIdentityMetadataUpdates(data.user);
   if (updates) {
     await supabase.auth.updateUser({ data: updates });
@@ -26,17 +37,21 @@ export default async function AdminProfilePage({
     fallbackEmail: "admin@bonix.app",
   });
 
-  const isMerchantActive = merchantRecord?.status === "ACTIVE";
-  const isMerchantApply = !merchantRecord;
+  const merchants = (merchantRecords ?? []) as MerchantProfile[];
+  const activeMerchants = merchants.filter((merchant) =>
+    isMerchantAcceptedStatus(merchant.status),
+  );
+  const isMerchantActive = activeMerchants.length > 0;
+  const isMerchantApply = merchants.length === 0;
   const merchantStatusLabel = isMerchantApply
     ? "APPLY"
-    : merchantRecord.status === "PENDING"
+    : merchants.some((merchant) => merchant.status === "PENDING")
       ? "PENDING APPROVAL"
-      : merchantRecord.status === "REJECTED"
+      : merchants.every((merchant) => merchant.status === "REJECTED")
         ? "REJECTED"
-        : merchantRecord.status === "ACTIVE"
+        : isMerchantActive
           ? "ACCEPTED"
-          : merchantRecord.status;
+          : "INACTIVE";
 
   const settings = ["Compliance", "Security", "Risk alerts", "Support"];
 
@@ -80,11 +95,13 @@ export default async function AdminProfilePage({
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {isMerchantActive ? (
             <Link
-              href={`/merchant/${adminID}/dashboard`}
+              href={`/merchant/${adminID}/profile`}
               className="flex items-center justify-between rounded-2xl border border-[#1F2937] bg-[#0B0F14] px-4 py-3 text-sm"
             >
               <span>Merchant</span>
-              <span className="text-xs text-[#94A3B8]">ACCEPTED</span>
+              <span className="text-xs text-[#94A3B8]">
+                {activeMerchants.length} businesses
+              </span>
             </Link>
           ) : isMerchantApply ? (
             <Link

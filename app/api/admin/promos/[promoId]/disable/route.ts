@@ -27,7 +27,7 @@ export async function PATCH(
 
   const { data: promo, error: promoError } = await admin
     .from('promos')
-    .update({ status: 'DISABLED' })
+    .update({ status: 'DISABLED', activity_state: 'UNACTIVE' })
     .eq('id', promoId)
     .select('id, status, merchant_id')
     .maybeSingle()

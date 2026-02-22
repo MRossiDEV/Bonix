@@ -216,6 +216,9 @@ export default function RegisterPage() {
           </p>
         </form>
       </section>
+      <br />
+      <br />
+      <Link href="/" className="text-[#FF7A00]"> Back to Landing Page</Link>
     </main>
   );
 }

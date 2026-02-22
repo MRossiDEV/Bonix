@@ -10,7 +10,14 @@ export type Json =
   | Json[]
 
 export type UserRole = 'USER' | 'MERCHANT' | 'AGENT' | 'ADMIN'
-export type PromoStatus = 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'EXPIRED'
+export type PromoStatus =
+  | 'DRAFT'
+  | 'ACTIVE'
+  | 'PAUSED'
+  | 'SOLD_OUT'
+  | 'DISABLED'
+  | 'EXPIRED'
+export type PromoActivityState = 'ACTIVE' | 'UNACTIVE'
 export type ReservationStatus = 'ACTIVE' | 'EXPIRED' | 'REDEEMED' | 'CANCELLED'
 export type RedemptionStatus = 'PENDING' | 'CONFIRMED' | 'FAILED' | 'REFUNDED'
 export type PaymentType = 'FULL_WALLET' | 'PARTIAL_WALLET' | 'IN_STORE'
@@ -84,6 +91,7 @@ export interface Database {
           id: string
           user_id: string
           email: string
+          logo_url: string | null
           business_name: string
           business_category: string | null
           locations: string[] | null
@@ -100,6 +108,7 @@ export interface Database {
           id?: string
           user_id: string
           email: string
+          logo_url?: string | null
           business_name: string
           business_category?: string | null
           locations?: string[] | null
@@ -116,6 +125,7 @@ export interface Database {
           id?: string
           user_id?: string
           email?: string
+          logo_url?: string | null
           business_name?: string
           business_category?: string | null
           locations?: string[] | null
@@ -135,14 +145,20 @@ export interface Database {
           merchant_id: string
           title: string
           description: string
+          image: string | null
           original_price: number
           discounted_price: number
           cashback_percent: number
           total_slots: number
           available_slots: number
+          category: string | null
+          is_featured: boolean
+          starts_at: string | null
           status: PromoStatus
+          activity_state: PromoActivityState
           activated_at: string | null
           expires_at: string
+          deleted_at: string | null
           created_at: string
           updated_at: string
         }
@@ -151,14 +167,20 @@ export interface Database {
           merchant_id: string
           title: string
           description: string
+          image?: string | null
           original_price: number
           discounted_price: number
           cashback_percent: number
           total_slots: number
           available_slots: number
+          category?: string | null
+          is_featured?: boolean
+          starts_at?: string | null
           status?: PromoStatus
+          activity_state?: PromoActivityState
           activated_at?: string | null
           expires_at: string
+          deleted_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -167,14 +189,93 @@ export interface Database {
           merchant_id?: string
           title?: string
           description?: string
+          image?: string | null
           original_price?: number
           discounted_price?: number
           cashback_percent?: number
           total_slots?: number
           available_slots?: number
+          category?: string | null
+          is_featured?: boolean
+          starts_at?: string | null
           status?: PromoStatus
+          activity_state?: PromoActivityState
           activated_at?: string | null
           expires_at?: string
+          deleted_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      platform_settings: {
+        Row: {
+          id: boolean
+          default_cashback_percent: number
+          max_promos_per_merchant: number
+          default_promo_image_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: boolean
+          default_cashback_percent?: number
+          max_promos_per_merchant?: number
+          default_promo_image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: boolean
+          default_cashback_percent?: number
+          max_promos_per_merchant?: number
+          default_promo_image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      promo_change_requests: {
+        Row: {
+          id: string
+          promo_id: string
+          merchant_id: string
+          requested_by: string
+          action: string
+          status: string
+          note: string | null
+          requested_changes: Json | null
+          reviewed_by: string | null
+          reviewed_at: string | null
+          admin_note: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          promo_id: string
+          merchant_id: string
+          requested_by: string
+          action: string
+          status?: string
+          note?: string | null
+          requested_changes?: Json | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          admin_note?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          promo_id?: string
+          merchant_id?: string
+          requested_by?: string
+          action?: string
+          status?: string
+          note?: string | null
+          requested_changes?: Json | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          admin_note?: string | null
           created_at?: string
           updated_at?: string
         }

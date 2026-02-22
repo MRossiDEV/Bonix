@@ -14,10 +14,10 @@ type WidgetLink = {
   helper: string;
 };
 
-export default function AdminDashboardPage({
+export default async function AdminDashboardPage({
   params,
-}: Readonly<{ params: { adminID: string } }>) {
-  const { adminID } = params;
+}: Readonly<{ params: Promise<{ adminID: string }> }>) {
+  const { adminID } = await params;
   const basePath = `/admin/${adminID}`;
 
   const atAGlance: AtAGlanceMetric[] = [

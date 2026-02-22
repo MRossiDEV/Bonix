@@ -54,6 +54,11 @@ const navItems: NavItem[] = [
     label: "Profile",
     icon: ({ active }) => <UserIcon active={active} />,
   },
+  {
+    path: "/settings",
+    label: "Settings",
+    icon: ({ active }) => <SettingsIcon active={active} />,
+  },
 ];
 
 const pageTitles: Record<string, string> = {
@@ -63,6 +68,7 @@ const pageTitles: Record<string, string> = {
   "/agents": "Agents",
   "/promos": "Promos",
   "/profile": "Profile",
+  "/settings": "Settings",
 };
 
 const sideMenuItems = [
@@ -76,6 +82,7 @@ const sideMenuItems = [
   { label: "Reports", path: "/reports" },
   { label: "System", path: "/system" },
   { label: "Audit Logs", path: "/audit-logs" },
+  { label: "Settings", path: "/settings" },
 ];
 
 export default function AdminAppLayout({
@@ -129,11 +136,6 @@ export default function AdminAppLayout({
       document.body.style.overflow = "";
     };
   }, [sideMenuOpen, avatarMenuOpen]);
-
-  useEffect(() => {
-    if (sideMenuOpen) setSideMenuOpen(false);
-    if (avatarMenuOpen) setAvatarMenuOpen(false);
-  }, [pathname]);
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {
@@ -458,6 +460,24 @@ function UserIcon({ active }: { active: boolean }) {
     >
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20c1.8-3.6 5.2-5 8-5s6.2 1.4 8 5" />
+    </svg>
+  );
+}
+
+function SettingsIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className={`h-5 w-5 ${active ? "text-[#22C55E]" : "text-current"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
   );
 }

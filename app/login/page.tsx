@@ -73,6 +73,9 @@ export default function LoginPage() {
 
       <section className="relative mx-auto flex w-full max-w-md flex-col gap-8">
         <header className="space-y-3">
+          {/* <img src="/logo.png" alt="Bonix" className="h-12 w-auto" /> */}
+          <Link href="/" className="text-[#FF7A00]"> Back to Landing Page</Link>
+          <br />
           <p className="text-xs uppercase tracking-[0.3em] text-[#9CA3AF]">
             Welcome back
           </p>

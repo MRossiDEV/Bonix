@@ -4,6 +4,11 @@ import MerchantApplyWizard from "./MerchantApplyWizard";
 import { createClient } from "@/lib/supabase/server";
 import { getAuthProfile } from "@/lib/auth-profile";
 
+function isMerchantAcceptedStatus(status: string | null | undefined): boolean {
+  const normalized = String(status ?? "").toUpperCase();
+  return normalized === "ACTIVE" || normalized === "APPROVED";
+}
+
 export default async function MerchantApplyPage({
   params,
 }: Readonly<{ params: Promise<{ userId: string }> }>) {
@@ -19,19 +24,28 @@ export default async function MerchantApplyPage({
     redirect(`/user/${data.user.id}/apply`);
   }
 
-  const { data: merchantRecord } = await supabase
+  const { data: merchantRecords } = await supabase
     .from("merchants")
-    .select("status")
+    .select("id, status")
     .eq("user_id", data.user.id)
-    .maybeSingle();
+    .order("created_at", { ascending: false });
+
+  const merchantList = merchantRecords ?? [];
+  const activeMerchant = merchantList.find((merchant) =>
+    isMerchantAcceptedStatus(merchant.status),
+  );
+  const pendingMerchant = merchantList.find(
+    (merchant) => String(merchant.status ?? "").toUpperCase() === "PENDING",
+  );
+  const merchantRecord = activeMerchant ?? pendingMerchant ?? merchantList[0] ?? null;
 
   const profile = getAuthProfile(data.user, {
     fallbackName: "Bonix Member",
     fallbackEmail: `${userId}@bonix.app`,
   });
 
-  if (merchantRecord && merchantRecord.status === "ACTIVE") {
-    redirect(`/merchant/${userId}/dashboard`);
+  if (activeMerchant) {
+    redirect(`/merchant/${activeMerchant.id}/dashboard`);
   }
 
   if (merchantRecord && merchantRecord.status === "PENDING") {

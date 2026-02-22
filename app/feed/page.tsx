@@ -8,6 +8,7 @@ export default function AppFeedPage() {
       id: "pocitos-grill-2x1",
       name: "Pocitos Grill",
       title: "2x1 lunch bowls",
+      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80",
       time: "Today · 12:00 - 15:00",
       neighborhood: "Pocitos",
       distance: "0.4 km",
@@ -18,6 +19,7 @@ export default function AppFeedPage() {
       id: "cafe-centro-20-brunch",
       name: "Cafe Centro",
       title: "20% off brunch",
+      image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80",
       time: "Today · 09:00 - 12:00",
       neighborhood: "Centro",
       distance: "0.8 km",
@@ -28,7 +30,7 @@ export default function AppFeedPage() {
       id: "marina-sushi-dessert",
       name: "Marina Sushi",
       title: "Free dessert with menu",
-      time: "Tonight · 19:00 - 22:00",
+      image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80",
       neighborhood: "Punta Carretas",
       distance: "1.1 km",
       tag: "Tonight",
@@ -77,6 +79,11 @@ export default function AppFeedPage() {
               className="rounded-3xl border border-[#2A2A2A] bg-[#1E1E1E] p-5"
             >
               <div className="flex items-start justify-between gap-3">
+                <img
+                  src={promo.image}
+                  alt={promo.title}
+                  className="h-16 w-16 rounded-lg object-cover"
+                />
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-[#9CA3AF]">
                     {promo.name}

@@ -1,3 +1,5 @@
+import { getPromoImageUrl } from "@/lib/promo-image";
+
 export type PromoCardData = {
   id: string;
   merchantName: string;
@@ -67,7 +69,7 @@ export function mapPromoRowToCard(row: PromoRow): PromoCardData {
     title: row.title,
     description: row.description,
     discountPercent: getDiscountPercent(originalPrice, discountedPrice),
-    imageUrl: row.image ?? undefined,
+    imageUrl: getPromoImageUrl(row.image),
     distanceLabel: "Nearby",
     neighborhood: "Bonix",
     priceLabel: getPriceLabel(discountedPrice),

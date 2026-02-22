@@ -193,7 +193,7 @@ export default function LandingPage() {
       <section className="fixed bottom-0 left-0 right-0 z-20 border-t border-[#2A2A2A] bg-[#121212]/95 p-4 backdrop-blur">
         <Link
           href="/install"
-          className="block w-full rounded-2xl bg-[#FF7A00] py-4 text-base font-semibold text-[#121212]"
+          className="block w-full rounded-2xl bg-[#FF7A00] py-4 text-center text-base font-semibold text-[#121212]"
         >
           Install Bonix
         </Link>

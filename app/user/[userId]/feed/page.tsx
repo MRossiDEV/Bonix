@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { mapPromoRowToCard, PromoCardData } from "@/lib/promos";
 
@@ -20,11 +21,13 @@ type PromoRow = {
   status: string;
   is_featured: boolean;
   category: string | null;
+  sold_out_duration_seconds: number | null;
   merchant: { business_name: string } | null;
 };
 
 type FeedPromo = PromoCardData & {
-  expiresIn: string;
+  expiresAt: string;
+  soldOutDurationSeconds: number | null;
   remaining: number;
   total: number;
   hot: boolean;
@@ -36,16 +39,49 @@ const fallbackGradients = [
   "from-[#7B61FF]/35 via-[#00E5A8]/30 to-[#FF7A00]/30",
 ];
 
-const formatExpiresIn = (expiresAt: string) => {
-  const now = Date.now();
-  const end = new Date(expiresAt).getTime();
-  const diffMs = Math.max(0, end - now);
-  const totalSeconds = Math.floor(diffMs / 1000);
-  const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-  const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-  const s = String(totalSeconds % 60).padStart(2, "0");
-  return `${h}:${m}:${s}`;
+type CountdownParts = {
+  totalMs: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
 };
+
+function getCountdownParts(expiresAt: string, nowMs: number): CountdownParts {
+  const end = new Date(expiresAt).getTime();
+  const safeEnd = Number.isFinite(end) ? end : 0;
+  const diffMs = Math.max(0, safeEnd - nowMs);
+  const totalSeconds = Math.floor(diffMs / 1000);
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return { totalMs: diffMs, days, hours, minutes, seconds };
+}
+
+function pad2(value: number): string {
+  return String(value).padStart(2, "0");
+}
+
+function formatDuration(totalSecondsRaw: number | null | undefined): string {
+  const totalSeconds =
+    typeof totalSecondsRaw === "number" && Number.isFinite(totalSecondsRaw)
+      ? Math.max(0, Math.floor(totalSecondsRaw))
+      : 0;
+
+  if (totalSeconds === 0) return "under 1m";
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+  return `${minutes}m ${seconds}s`;
+}
 
 const PAGE_SIZE = 12;
 
@@ -56,6 +92,17 @@ export default function UserFeedPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 1000);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -82,7 +129,9 @@ export default function UserFeedPage() {
 
         return {
           ...card,
-          expiresIn: formatExpiresIn(row.expires_at),
+          expiresAt: row.expires_at,
+          soldOutDurationSeconds:
+            row.status === "SOLD_OUT" ? row.sold_out_duration_seconds : null,
           remaining: row.available_slots,
           total: row.total_slots,
           hot: row.available_slots <= 3 || expiringSoon,
@@ -140,6 +189,9 @@ export default function UserFeedPage() {
             promo.total > 0
               ? ((promo.total - promo.remaining) / promo.total) * 100
               : 0;
+          const countdown = getCountdownParts(promo.expiresAt, nowMs);
+          const soldOutIn = formatDuration(promo.soldOutDurationSeconds);
+          const isSoldOut = promo.status === "SOLD_OUT";
 
           const disabled =
             promo.status === "SOLD_OUT" || promo.status === "EXPIRED";
@@ -149,6 +201,8 @@ export default function UserFeedPage() {
               key={promo.id}
               whileTap={{ scale: disabled ? 1 : 0.97 }}
               className={`overflow-hidden bg-[#121212] shadow-lg ${
+                isSoldOut ? "ring-2 ring-[#EF4444]" : ""
+              } ${
                 disabled ? "opacity-50" : ""
               }`}
             >
@@ -160,11 +214,12 @@ export default function UserFeedPage() {
                   }`}
                 />
                 {promo.imageUrl ? (
-                  <img
+                  <Image
                     src={promo.imageUrl}
                     alt={promo.title}
-                    className="absolute inset-0 h-full w-full object-cover"
-                    loading="lazy"
+                    fill
+                    sizes="100vw"
+                    className="absolute inset-0 object-cover"
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -181,9 +236,44 @@ export default function UserFeedPage() {
                       🔥 Hot
                     </span>
                   )}
-                  <span className="rounded-full bg-black/80 px-3 py-1 text-xs">
-                    ⏳ {promo.expiresIn}
-                  </span>
+                  {isSoldOut ? (
+                    <span className="rounded-full bg-[#EF4444] px-3 py-1 text-xs font-bold text-white">
+                      SOLD OUT
+                    </span>
+                  ) : null}
+                </div>
+
+                {isSoldOut ? (
+                  <div className="absolute inset-x-0 top-0 border-b border-white/15 bg-[#7F1D1D]/90 px-4 py-2">
+                    <p className="text-center text-xs font-semibold tracking-wide text-white">
+                      Sold out in {soldOutIn}
+                    </p>
+                  </div>
+                ) : null}
+
+                <div className="absolute inset-x-0 bottom-0 border-t border-white/10 bg-black/50 px-4 py-3">
+                  {countdown.totalMs <= 0 ? (
+                    <p className="text-center text-sm font-semibold tracking-wide text-[#FF7A00]">Expired</p>
+                  ) : (
+                    <div className="flex items-end justify-center gap-4">
+                      <div className="text-center">
+                        <p className="text-lg font-semibold leading-none text-white">{pad2(countdown.days)}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-wider text-gray-300">d</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-semibold leading-none text-white">{pad2(countdown.hours)}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-wider text-gray-300">h</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-semibold leading-none text-white">{pad2(countdown.minutes)}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-wider text-gray-300">m</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-lg font-semibold leading-none text-white">{pad2(countdown.seconds)}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-wider text-gray-300">s</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
