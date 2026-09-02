@@ -86,6 +86,9 @@ export function PromoDetailClient({
   const [showReserveModal, setShowReserveModal] =
     useState(false);
 
+  const [reserveError, setReserveError] =
+    useState<string | null>(null);
+
   const countdown = getCountdownParts(
     expiresAt,
     nowMs
@@ -117,12 +120,23 @@ export function PromoDetailClient({
   const handleReserve = async () => {
     try {
       setIsReserving(true);
+      setReserveError(null);
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ promoId: promo.id }),
+      });
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1400)
-      );
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? "Unable to reserve promo");
+      }
 
-      router.push("/reservations");
+      const payload = (await response.json()) as { reservationId?: string };
+      setShowReserveModal(false);
+      router.push(payload.reservationId ? `/reservations` : "/reservations");
+    } catch (error) {
+      setReserveError(error instanceof Error ? error.message : "Unable to reserve promo");
     } finally {
       setIsReserving(false);
     }
@@ -137,14 +151,9 @@ export function PromoDetailClient({
       <section className="relative h-[78vh] overflow-hidden">
         {promo.imageUrl && (
           <motion.div
-            animate={{
-              scale: [1, 1.03, 1],
-            }}
-            transition={{
-              duration: 18,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            initial={{ scale: 1.02 }}
+            animate={{ scale: 1.05 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="absolute inset-0"
           >
             <Image
@@ -157,13 +166,13 @@ export function PromoDetailClient({
           </motion.div>
         )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050609] via-black/45 to-black/10" />
 
         {/* TOP NAV */}
         <div className="absolute left-0 right-0 top-0 z-50 flex items-center justify-between p-4">
           <Link
             href={feedHref}
-            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl"
+            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-[#0B0E13]/70 backdrop-blur-xl"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
@@ -174,7 +183,7 @@ export function PromoDetailClient({
               onClick={() =>
                 setIsSaved(!isSaved)
               }
-              className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl"
+              className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-[#0B0E13]/70 backdrop-blur-xl"
             >
               <Bookmark
                 className={`h-5 w-5 ${
@@ -205,11 +214,11 @@ export function PromoDetailClient({
           className="absolute left-4 top-40 rounded-[2rem] border border-white/10 bg-black/40 p-5 backdrop-blur-2xl"
         >
           <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-full bg-[#FF7A00] px-3 py-1 text-xs font-black text-[#121212]">
+            <div className="rounded-[14px] border border-[#DFFF00]/70 bg-[#050609]/70 px-3 py-2 text-xs font-black text-[#DFFF00]">
               {promo.discountPercent}% OFF
             </div>
 
-            <div className="rounded-full bg-[#00E5A8]/10 px-3 py-1 text-xs font-bold text-[#00E5A8]">
+            <div className="rounded-[14px] border border-[#00E5A8]/30 bg-[#00E5A8]/10 px-3 py-2 text-xs font-bold text-[#00E5A8]">
               +{promo.cashbackPercent}% BACK
             </div>
           </div>
@@ -243,7 +252,7 @@ export function PromoDetailClient({
             </div>
           </div>
 
-          <h1 className="mt-4 text-4xl font-black leading-tight md:text-5xl">
+          <h1 className="mt-4 text-5xl font-black uppercase leading-[0.9] tracking-tight md:text-7xl">
             {promo.title}
           </h1>
 
@@ -281,9 +290,9 @@ export function PromoDetailClient({
       </section>
 
       {/* BODY */}
-      <main className="space-y-5 px-4 pb-40 pt-5">
+      <main className="mx-auto max-w-3xl space-y-5 px-4 pb-40 pt-5">
         {/* SOCIAL */}
-        <section className="flex items-center justify-between rounded-[2rem] border border-white/5 bg-[#121212] px-5 py-4">
+        <section className="flex items-center justify-between rounded-[22px] border border-white/10 bg-[#11151D]/90 px-5 py-4">
           <div className="flex items-center gap-6">
             <button
               onClick={() =>
@@ -363,9 +372,9 @@ export function PromoDetailClient({
         )}
 
         {/* DESCRIPTION */}
-        <section className="rounded-[2rem] border border-white/5 bg-[#121212] p-5">
+        <section className="rounded-[22px] border border-white/10 bg-[#11151D]/90 p-5">
           <div className="flex items-center gap-2">
-            <Flame className="h-5 w-5 text-[#FF7A00]" />
+            <Flame className="h-5 w-5 text-[#DFFF00]" />
 
             <h2 className="text-xl font-black">
               About this promo
@@ -405,9 +414,9 @@ export function PromoDetailClient({
 
         {/* COUNTDOWN */}
         {!isExpired && (
-          <section className="rounded-[2rem] border border-[#FF7A00]/20 bg-[#FF7A00]/5 p-5">
+          <section className="rounded-[22px] border border-[#DFFF00]/25 bg-[#DFFF00]/[0.04] p-5">
             <div className="flex items-center gap-2">
-              <Clock3 className="h-5 w-5 text-[#FF7A00]" />
+              <Clock3 className="h-5 w-5 text-[#DFFF00]" />
 
               <h2 className="text-xl font-black">
                 Time Left
@@ -459,13 +468,13 @@ export function PromoDetailClient({
         )}
 
         {/* AVAILABILITY */}
-        <section className="rounded-[2rem] border border-white/5 bg-[#121212] p-5">
+        <section className="rounded-[22px] border border-white/10 bg-[#11151D]/90 p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black">
               Availability
             </h2>
 
-            <p className="font-semibold text-[#FF7A00]">
+            <p className="font-semibold text-[#DFFF00]">
               {promo.availableSlots} left
             </p>
           </div>
@@ -479,18 +488,51 @@ export function PromoDetailClient({
               transition={{
                 duration: 1,
               }}
-              className="h-full rounded-full bg-[#FF7A00]"
+              className="h-full rounded-full bg-[#DFFF00]"
             />
           </div>
         </section>
 
+        <section className="rounded-[22px] border border-white/10 bg-[#11151D]/90 p-5">
+          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#DFFF00]">Good to know</p>
+          <h2 className="mt-2 text-2xl font-black">Promo conditions</h2>
+          <div className="mt-5 space-y-4 text-sm leading-relaxed text-[#B3BAC5]">
+            {[
+              "Valid for one redemption per Bonix account.",
+              "Reservation does not require payment.",
+              "Show your Bonix QR code before completing payment.",
+              "Cannot be combined with other promotions.",
+            ].map((condition) => (
+              <div key={condition} className="flex items-start gap-3">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#DFFF00]" />
+                <span>{condition}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[22px] border border-white/10 bg-[#11151D]/90 p-5">
+          <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-[#DFFF00]">What happens next</p>
+          <h2 className="mt-2 text-2xl font-black">Simple as that.</h2>
+          <div className="mt-5 space-y-3">
+            {["Reserve the promotion with Bonix.", `Visit ${promo.merchantName} at your selected time.`, "Show your Bonix QR and enjoy your reward."].map((step, index) => (
+              <div key={step} className="flex items-center gap-3 rounded-2xl bg-white/[0.035] p-4">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#DFFF00]/10 font-black text-[#DFFF00]">{index + 1}</span>
+                <span className="text-sm font-semibold text-[#D8DDE3]">{step}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* MAP */}
-        <section className="overflow-hidden rounded-[2rem] border border-white/5 bg-[#121212]">
-          <div className="h-48 bg-[#1A1A1A]" />
+        <section className="overflow-hidden rounded-[22px] border border-white/10 bg-[#11151D]/90">
+          <div className="relative h-48 bg-[#10141B] [background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.03),rgba(255,255,255,.03)_1px,transparent_1px,transparent_30px)]">
+            <div className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#DFFF00] text-[#101300] shadow-[0_0_40px_rgba(223,255,0,0.4)]"><MapPin className="h-6 w-6" /></div>
+          </div>
 
           <div className="p-5">
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-[#FF7A00]" />
+              <MapPin className="h-5 w-5 text-[#DFFF00]" />
 
               <div>
                 <p className="font-bold">
@@ -508,7 +550,7 @@ export function PromoDetailClient({
       </main>
 
       {/* STICKY CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/5 bg-[#080808]/90 p-4 backdrop-blur-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#050609]/92 p-4 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-2xl items-center gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">
@@ -539,7 +581,7 @@ export function PromoDetailClient({
             onClick={() =>
               setShowReserveModal(true)
             }
-            className="flex-1 rounded-[1.5rem] bg-[#FF7A00] px-6 py-5 text-lg font-black text-[#121212] disabled:opacity-50"
+            className="flex-1 rounded-2xl bg-[#DFFF00] px-6 py-5 text-lg font-black text-[#101300] shadow-[0_0_35px_rgba(223,255,0,0.2)] disabled:opacity-50"
           >
             {isExpired
               ? "Expired"
@@ -558,7 +600,7 @@ export function PromoDetailClient({
               initial={{ y: 400 }}
               animate={{ y: 0 }}
               exit={{ y: 400 }}
-              className="w-full rounded-t-[3rem] bg-[#121212] p-6"
+              className="w-full rounded-t-[28px] border-t border-white/10 bg-[#11151D] p-6"
             >
               <div className="mx-auto h-1.5 w-20 rounded-full bg-[#333]" />
 
@@ -588,6 +630,12 @@ export function PromoDetailClient({
                 </div>
               </div>
 
+              {reserveError ? (
+                <p className="mt-4 rounded-2xl border border-[#FF4D4D]/30 bg-[#FF4D4D]/10 px-4 py-3 text-sm text-[#FF9A9A]">
+                  {reserveError}
+                </p>
+              ) : null}
+
               <div className="mt-6 flex gap-3">
                 <button
                   onClick={() =>
@@ -606,7 +654,7 @@ export function PromoDetailClient({
                   }}
                   onClick={handleReserve}
                   disabled={isReserving}
-                  className="flex-1 rounded-2xl bg-[#FF7A00] py-4 font-black text-[#121212]"
+                  className="flex-1 rounded-2xl bg-[#DFFF00] py-4 font-black text-[#101300]"
                 >
                   {isReserving
                     ? "Reserving..."

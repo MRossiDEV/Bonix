@@ -57,7 +57,7 @@ export default async function getActivePromos(): Promise<PromoCardData[]> {
         neighborhood
       )
     `)
-    .eq("activity_state", "ACTIVE")
+      .eq("status", "ACTIVE")
     .gt("available_slots", 0)
     .gt("expires_at", new Date().toISOString())
     .order("is_featured", {

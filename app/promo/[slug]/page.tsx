@@ -6,7 +6,7 @@ import { PromoDetailClient } from "./PromoDetailClient";
 
 import { mapPromoRowToCard } from "@/lib/promos";
 
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type PromoPageProps = {
   params: Promise<{
@@ -58,9 +58,8 @@ export default async function PromoPage({
 }: PromoPageProps) {
   const { slug } = await params;
 
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
+  const supabase = createAdminClient();
+  const promoQuery = supabase
     .from("promos")
     .select(`
       id,
@@ -95,14 +94,10 @@ export default async function PromoPage({
         logo_url
       )
     `)
-    .eq("activity_state", "ACTIVE")
-    .eq("slug", slug)
-    .gt(
-      "expires_at",
-      new Date().toISOString()
-    )
-    .gt("available_slots", 0)
+    .eq("id", slug)
     .single<PromoRow>();
+
+  const { data, error } = await promoQuery;
 
   if (error || !data) {
     console.error(
@@ -138,6 +133,7 @@ export default async function PromoPage({
       basePath=""
       userName="Bonix Member"
       userEmail="member@bonix.app"
+      hideBottomNav
     >
       <PromoDetailClient
         promo={{

@@ -15,6 +15,7 @@ type UserAppLayoutProps = {
   userEmail?: string;
   userInitials?: string;
   userAvatarUrl?: string;
+  hideBottomNav?: boolean;
 };
 
 type NavItem = {
@@ -74,6 +75,7 @@ export default function UserAppLayout({
   userEmail = "aurelia@bonix.app",
   userInitials = "AB",
   userAvatarUrl,
+  hideBottomNav = false,
 }: UserAppLayoutProps) {
   const pathname = usePathname();
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -135,14 +137,14 @@ export default function UserAppLayout({
   };
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#121212] text-[#FAFAFA]">
+    <div className="bonix-shell relative overflow-x-hidden">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[#FF7A00]/20 blur-[120px]" />
         <div className="absolute top-1/3 -left-24 h-56 w-56 rounded-full bg-[#00E5A8]/15 blur-[120px]" />
         <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#7B61FF]/20 blur-[120px]" />
       </div>
 
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
+      <header className="bonix-shell__header fixed inset-x-0 top-0 z-40 border-b border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-xl items-center justify-between px-4">
           <button
             type="button"
@@ -188,11 +190,11 @@ export default function UserAppLayout({
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto w-full max-w-xl pb-[calc(112px+env(safe-area-inset-bottom))] pt-20">
+      <main className={`relative z-10 mx-auto w-full max-w-xl ${hideBottomNav ? "pb-6" : "pb-[calc(112px+env(safe-area-inset-bottom))]"} pt-20`}>
         {children}
       </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
+      {!hideBottomNav ? <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[#2A2A2A] bg-[#121212]/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-xl items-center justify-between px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3">
           {resolvedNavItems.map((item) => {
             const isActive = pathname ? pathname.startsWith(item.href) : false;
@@ -213,7 +215,7 @@ export default function UserAppLayout({
             );
           })}
         </div>
-      </nav>
+      </nav> : null}
 
       <AnimatePresence>
         {sideMenuOpen ? (
