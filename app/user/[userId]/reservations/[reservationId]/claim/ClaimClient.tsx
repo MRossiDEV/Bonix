@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import QRCode from "qrcode";
 
@@ -73,12 +73,14 @@ export default function ClaimClient({ reservation }: ClaimClientProps) {
 
   const isDisabled = reservation.status !== "ACTIVE" || isExpired;
 
-  useEffect(() => {
+  const prevPaymentTypeRef = useRef(paymentType);
+  if (prevPaymentTypeRef.current !== paymentType) {
+    prevPaymentTypeRef.current = paymentType;
     setQrToken(null);
     setQrDataUrl(null);
     setQrExpiresAt(null);
     setErrorMessage(null);
-  }, [paymentType]);
+  }
 
   useEffect(() => {
     let isActive = true;

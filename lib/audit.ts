@@ -9,12 +9,33 @@ type AuditLogInput = {
 }
 
 export async function logAudit(input: AuditLogInput): Promise<void> {
-  const supabase = createAdminClient()
-  await supabase.from('audit_logs').insert({
-    action: input.action,
-    entity_type: input.entityType,
-    entity_id: input.entityId,
-    user_id: input.userId ?? null,
-    metadata: input.metadata ?? null,
-  })
+  try {
+    const supabase = createAdminClient()
+    const { error } = await supabase.from('audit_logs').insert({
+      action: input.action,
+      entity_type: input.entityType,
+      entity_id: input.entityId,
+      user_id: input.userId ?? null,
+      metadata: input.metadata ?? null,
+    })
+
+    if (error) {
+      console.error('[audit] insert failed', {
+        action: input.action,
+        entity_type: input.entityType,
+        entity_id: input.entityId,
+        user_id: input.userId ?? null,
+        error_code: error.code,
+        error_message: error.message,
+      })
+    }
+  } catch (error) {
+    console.error('[audit] unexpected error', {
+      action: input.action,
+      entity_type: input.entityType,
+      entity_id: input.entityId,
+      user_id: input.userId ?? null,
+      error,
+    })
+  }
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { LogoutButton } from "@/app/components/LogoutButton";
 
@@ -119,10 +119,12 @@ export default function UserAppLayout({
     };
   }, [sideMenuOpen, avatarMenuOpen]);
 
-  useEffect(() => {
+  const prevPathnameRef = useRef(pathname);
+  if (prevPathnameRef.current !== pathname) {
+    prevPathnameRef.current = pathname;
     if (sideMenuOpen) setSideMenuOpen(false);
     if (avatarMenuOpen) setAvatarMenuOpen(false);
-  }, [pathname]);
+  }
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {

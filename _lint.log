@@ -1,0 +1,193 @@
+
+> bonix@0.1.0 lint
+> eslint
+
+
+D:\DEV\bonix\app\admin\[adminID]\users\page.tsx
+  36:9  warning  The 'users' array makes the dependencies of useMemo Hook (at line 113) change on every render. To fix this, wrap the initialization of 'users' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+D:\DEV\bonix\app\agent\[agentID]\activity\page.tsx
+   3:8  warning  'Link' is defined but never used    @typescript-eslint/no-unused-vars
+  17:3  warning  'MapPin' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\agent\[agentID]\updates\page.tsx
+   3:8  warning  'Link' is defined but never used      @typescript-eslint/no-unused-vars
+  10:3  warning  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\api\merchant\promos\[id]\route.ts
+  284:3  warning  '_request' is defined but never used  @typescript-eslint/no-unused-vars
+  285:3  warning  '_context' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\components\AgentAppLayout.tsx
+   36:14  warning  'active' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   41:14  warning  'active' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   46:14  warning  'active' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+  130:7   error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\AgentAppLayout.tsx:130:7
+  128 |
+  129 |   const prevPathnameRef = useRef(pathname);
+> 130 |   if (prevPathnameRef.current !== pathname) {
+      |       ^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  131 |     prevPathnameRef.current = pathname;
+  132 |     if (sideMenuOpen) setSideMenuOpen(false);
+  133 |     if (avatarMenuOpen) setAvatarMenuOpen(false);  react-hooks/refs
+  131:5   error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\AgentAppLayout.tsx:131:5
+  129 |   const prevPathnameRef = useRef(pathname);
+  130 |   if (prevPathnameRef.current !== pathname) {
+> 131 |     prevPathnameRef.current = pathname;
+      |     ^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  132 |     if (sideMenuOpen) setSideMenuOpen(false);
+  133 |     if (avatarMenuOpen) setAvatarMenuOpen(false);
+  134 |   }      react-hooks/refs
+  368:10  warning  'InboxIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  387:10  warning  'ClipboardIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\components\MerchantAppLayout.tsx
+   36:14  warning  'active' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   46:14  warning  'active' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  124:7   error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\MerchantAppLayout.tsx:124:7
+  122 |
+  123 |   const prevPathnameRef = useRef(pathname);
+> 124 |   if (prevPathnameRef.current !== pathname) {
+      |       ^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  125 |     prevPathnameRef.current = pathname;
+  126 |     if (sideMenuOpen) setSideMenuOpen(false);
+  127 |     if (avatarMenuOpen) setAvatarMenuOpen(false);  react-hooks/refs
+  125:5   error    Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\MerchantAppLayout.tsx:125:5
+  123 |   const prevPathnameRef = useRef(pathname);
+  124 |   if (prevPathnameRef.current !== pathname) {
+> 125 |     prevPathnameRef.current = pathname;
+      |     ^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  126 |     if (sideMenuOpen) setSideMenuOpen(false);
+  127 |     if (avatarMenuOpen) setAvatarMenuOpen(false);
+  128 |   }      react-hooks/refs
+  362:10  warning  'TagIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  380:10  warning  'ReceiptIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\components\UserAppLayout.tsx
+  123:7  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\UserAppLayout.tsx:123:7
+  121 |
+  122 |   const prevPathnameRef = useRef(pathname);
+> 123 |   if (prevPathnameRef.current !== pathname) {
+      |       ^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  124 |     prevPathnameRef.current = pathname;
+  125 |     if (sideMenuOpen) setSideMenuOpen(false);
+  126 |     if (avatarMenuOpen) setAvatarMenuOpen(false);  react-hooks/refs
+  124:5  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\components\UserAppLayout.tsx:124:5
+  122 |   const prevPathnameRef = useRef(pathname);
+  123 |   if (prevPathnameRef.current !== pathname) {
+> 124 |     prevPathnameRef.current = pathname;
+      |     ^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  125 |     if (sideMenuOpen) setSideMenuOpen(false);
+  126 |     if (avatarMenuOpen) setAvatarMenuOpen(false);
+  127 |   }      react-hooks/refs
+
+D:\DEV\bonix\app\feed\page.tsx
+   3:8   warning  'Image' is defined but never used                @typescript-eslint/no-unused-vars
+   4:8   warning  'Link' is defined but never used                 @typescript-eslint/no-unused-vars
+   5:10  warning  'motion' is defined but never used               @typescript-eslint/no-unused-vars
+   6:10  warning  'useEffect' is defined but never used            @typescript-eslint/no-unused-vars
+   6:21  warning  'useMemo' is defined but never used              @typescript-eslint/no-unused-vars
+   6:30  warning  'useState' is defined but never used             @typescript-eslint/no-unused-vars
+  10:3   warning  'Bell' is defined but never used                 @typescript-eslint/no-unused-vars
+  11:3   warning  'ChevronDown' is defined but never used          @typescript-eslint/no-unused-vars
+  12:3   warning  'Clock3' is defined but never used               @typescript-eslint/no-unused-vars
+  13:3   warning  'Filter' is defined but never used               @typescript-eslint/no-unused-vars
+  14:3   warning  'Flame' is defined but never used                @typescript-eslint/no-unused-vars
+  15:3   warning  'Map' is defined but never used                  @typescript-eslint/no-unused-vars
+  16:3   warning  'MapPin' is defined but never used               @typescript-eslint/no-unused-vars
+  17:3   warning  'Search' is defined but never used               @typescript-eslint/no-unused-vars
+  18:3   warning  'User2' is defined but never used                @typescript-eslint/no-unused-vars
+  21:8   warning  'UserAppLayout' is defined but never used        @typescript-eslint/no-unused-vars
+  22:10  warning  'createClient' is defined but never used         @typescript-eslint/no-unused-vars
+  23:10  warning  'mapPromoRowToCard' is defined but never used    @typescript-eslint/no-unused-vars
+  23:29  warning  'PromoCardData' is defined but never used        @typescript-eslint/no-unused-vars
+  27:7   warning  'categories' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  38:10  warning  'formatTimeLeft' is defined but never used       @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\merchant\[merchantId]\dashboard\page.tsx
+  5:3  warning  'ArrowUpRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\merchant\[merchantId]\plans\page.tsx
+  19:9  warning  'merchantID' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\merchant\[merchantId]\profile\MerchantLogoUploader.tsx
+  78:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\DEV\bonix\app\merchant\[merchantId]\profile\page.tsx
+    5:10  warning  'FavoriteMerchantButton' is defined but never used     @typescript-eslint/no-unused-vars
+    7:10  warning  'MerchantBusinessesManager' is defined but never used  @typescript-eslint/no-unused-vars
+  167:9   warning  'displayEmail' is assigned a value but never used      @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\promo\[slug]\PromoDetailClient.tsx
+  18:3  warning  'QrCode' is defined but never used  @typescript-eslint/no-unused-vars
+  21:3  warning  'Store' is defined but never used   @typescript-eslint/no-unused-vars
+  22:3  warning  'Ticket' is defined but never used  @typescript-eslint/no-unused-vars
+  23:3  warning  'Wallet' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\user\[userId]\feed\page.tsx
+   8:10  warning  'LiveActivityStrip' is defined but never used      @typescript-eslint/no-unused-vars
+  63:9   warning  'liveActivity' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\user\[userId]\merchant\[merchantId]\page.tsx
+  371:9  warning  'featuredPromos' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  372:9  warning  'soldOutPromos' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  373:9  warning  'totalPromosLaunched' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  382:9  warning  'totalRedemptions' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  383:9  warning  'trustedUsers' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  386:9  warning  'unlockedToday' is assigned a value but never used        @typescript-eslint/no-unused-vars
+
+D:\DEV\bonix\app\user\[userId]\reservations\[reservationId]\claim\ClaimClient.tsx
+  77:7  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\user\[userId]\reservations\[reservationId]\claim\ClaimClient.tsx:77:7
+  75 |
+  76 |   const prevPaymentTypeRef = useRef(paymentType);
+> 77 |   if (prevPaymentTypeRef.current !== paymentType) {
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  78 |     prevPaymentTypeRef.current = paymentType;
+  79 |     setQrToken(null);
+  80 |     setQrDataUrl(null);                    react-hooks/refs
+  78:5  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+D:\DEV\bonix\app\user\[userId]\reservations\[reservationId]\claim\ClaimClient.tsx:78:5
+  76 |   const prevPaymentTypeRef = useRef(paymentType);
+  77 |   if (prevPaymentTypeRef.current !== paymentType) {
+> 78 |     prevPaymentTypeRef.current = paymentType;
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render
+  79 |     setQrToken(null);
+  80 |     setQrDataUrl(null);
+  81 |     setQrExpiresAt(null);  react-hooks/refs
+
+D:\DEV\bonix\public\sw.js
+  1:7  warning  'SW_VERSION' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 64 problems (8 errors, 56 warnings)
+

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
+import { FavoriteMerchantButton } from "@/app/components/FavoriteMerchantButton";
 import { LogoutButton } from "@/app/components/LogoutButton";
 import { MerchantBusinessesManager } from "@/app/merchant/[merchantId]/profile/MerchantBusinessesManager";
 import { MerchantProfileEditor } from "@/app/merchant/[merchantId]/profile/MerchantProfileEditor";
@@ -172,8 +173,8 @@ export default async function MerchantProfilePage({
     .join("") || "BM";
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl border border-[#262626] bg-[#1A1A1A] p-6">
+    <div className="space-y-2">
+      <section className="border border-[#262626] bg-[#1A1A1A] p-6">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#111111] text-lg font-semibold text-[#FFB547]">
             {merchantLogoUrl ? (
@@ -190,15 +191,22 @@ export default async function MerchantProfilePage({
           </div>
           <div>
             <p className="text-xl font-semibold">{displayName}</p>
-            <p className="text-sm text-[#A1A1AA]">{displayEmail}</p>
+            {/* <p className="text-sm text-[#A1A1AA]">{displayEmail}</p> */}
           </div>
         </div>
+
+        {/* <div className="mt-4">
+          <FavoriteMerchantButton merchantId={merchant.id} className="w-full" />
+        </div> */}
       </section>
 
-      <MerchantLogoUploader
+      <div className="mx-1">
+        <MerchantLogoUploader
         initialLogoUrl={merchantLogoUrl}
-        merchantId={merchant.id}
-      />
+        merchantId={merchant.id} />
+      </div>
+
+      
 
       <MerchantProfileEditor merchant={merchant} />
 

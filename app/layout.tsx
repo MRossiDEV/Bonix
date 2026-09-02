@@ -21,12 +21,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
-        <ServiceWorkerRegistration />
-        <AuthSessionSync />
-        {children}
-      </body>
-    </html>
+<html lang="en" suppressHydrationWarning>
+  <body
+    suppressHydrationWarning
+    className={`${poppins.variable} antialiased`}
+  >
+    <ServiceWorkerRegistration />
+    <AuthSessionSync />
+    {children}
+  </body>
+</html>
   );
 }

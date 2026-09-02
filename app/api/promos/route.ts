@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 type PromoRow = {
   id: string;
+  merchant_id: string;
   title: string;
   description: string;
   original_price: number;
@@ -20,11 +22,12 @@ type PromoRow = {
   created_at: string;
   updated_at: string;
   sold_out_duration_seconds: number | null;
-  merchant: { business_name: string } | null;
+  merchant: { business_name: string; logo_url: string | null } | null;
+  is_favorited?: boolean;
 };
 
 type PromoRowRaw = Omit<PromoRow, "merchant"> & {
-  merchant: { business_name: string }[] | null;
+  merchant: { business_name: string; logo_url: string | null }[] | null;
 };
 
 const MAX_LIMIT = 50;
@@ -43,16 +46,36 @@ export async function GET(request: Request) {
   const offset = (safePage - 1) * safeLimit;
 
   const admin = createAdminClient();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let favoriteMerchantIds = new Set<string>();
+  if (user) {
+    const { data: favoritesData } = await admin
+      .from("user_favorite_merchants")
+      .select("merchant_id")
+      .eq("user_id", user.id);
+
+    favoriteMerchantIds = new Set((favoritesData ?? []).map((row) => row.merchant_id));
+  }
+
+  const shouldPrioritizeFavorites = user && safePage === 1 && favoriteMerchantIds.size > 0;
+  const queryLimit = shouldPrioritizeFavorites
+    ? Math.min(MAX_LIMIT, safeLimit * 4)
+    : safeLimit;
+  const queryOffset = shouldPrioritizeFavorites ? 0 : offset;
 
   let query = admin
     .from("promos")
     .select(
-      "id, title, description, original_price, discounted_price, cashback_percent, image, expires_at, total_slots, available_slots, status, is_featured, category, activated_at, created_at, updated_at, merchant:merchants (business_name)",
+      "id, merchant_id, title, description, original_price, discounted_price, cashback_percent, image, expires_at, total_slots, available_slots, status, is_featured, category, activated_at, created_at, updated_at, merchant:merchants (business_name, logo_url)",
     )
     .in("status", ["ACTIVE", "SOLD_OUT"])
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })
-    .range(offset, offset + safeLimit - 1);
+    .range(queryOffset, queryOffset + queryLimit - 1);
 
   if (id) {
     query = query.eq("id", id);
@@ -66,10 +89,21 @@ export async function GET(request: Request) {
 
   const promos = (data ?? []).map((row: PromoRowRaw): PromoRow => {
     const merchant = Array.isArray(row.merchant) ? row.merchant[0] ?? null : row.merchant;
-    return { ...row, merchant, sold_out_duration_seconds: null };
+    return {
+      ...row,
+      merchant,
+      sold_out_duration_seconds: null,
+      is_favorited: favoriteMerchantIds.has(row.merchant_id),
+    };
   });
 
-  const soldOutPromoIds = promos.filter((promo) => promo.status === "SOLD_OUT").map((promo) => promo.id);
+  if (shouldPrioritizeFavorites) {
+    promos.sort((a, b) => Number(Boolean(b.is_favorited)) - Number(Boolean(a.is_favorited)));
+  }
+
+  const pagedPromos = shouldPrioritizeFavorites ? promos.slice(0, safeLimit) : promos;
+
+  const soldOutPromoIds = pagedPromos.filter((promo) => promo.status === "SOLD_OUT").map((promo) => promo.id);
 
   if (soldOutPromoIds.length > 0) {
     const { data: reservations, error: reservationsError } = await admin
@@ -89,7 +123,7 @@ export async function GET(request: Request) {
         latestReservationByPromo.set(promoId, createdAt);
       }
 
-      for (const promo of promos) {
+      for (const promo of pagedPromos) {
         if (promo.status !== "SOLD_OUT") {
           continue;
         }
@@ -115,5 +149,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({ promos });
+  return NextResponse.json({ promos: pagedPromos });
 }

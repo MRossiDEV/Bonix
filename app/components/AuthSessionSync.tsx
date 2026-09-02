@@ -29,6 +29,10 @@ export function AuthSessionSync() {
 
     const syncSession = async () => {
       const supabase = createClient();
+      if (!supabase) {
+        return;
+      }
+
       const { data } = await supabase.auth.getSession();
       const session = data.session;
 

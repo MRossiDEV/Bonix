@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-import { PromoFeed } from "@/app/components/PromoFeed";
+import { PromoFeed } from "@/app/components/feed/PromoFeed";
 
 const steps = [
   { id: 1, label: "Discover promos", detail: "Local spots, live today" },

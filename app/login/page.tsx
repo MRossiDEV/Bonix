@@ -7,10 +7,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { config } from "@/lib/config";
 
+const DEV_ACCOUNT_EMAIL = "full.access@bonix.local";
+const DEV_ACCOUNT_PASSWORD = "FullAccess123!";
+
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(DEV_ACCOUNT_EMAIL);
+  const [password, setPassword] = useState(DEV_ACCOUNT_PASSWORD);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -22,6 +25,13 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient();
+      if (!supabase) {
+        setErrorMessage(
+          "Supabase is not configured yet. Restart the app after updating the environment variables."
+        );
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -46,6 +56,13 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient();
+      if (!supabase) {
+        setErrorMessage(
+          "Supabase is not configured yet. Restart the app after updating the environment variables."
+        );
+        return;
+      }
+
       const appOrigin = window.location.origin || config.appUrl;
       const redirectTo = new URL("/auth/callback", appOrigin);
 
@@ -84,6 +101,18 @@ export default function LoginPage() {
             Access your wallet, promos, and nearby deals.
           </p>
         </header>
+
+        <div className="rounded-2xl border border-[#FF7A00]/40 bg-[#FF7A00]/10 p-4 text-sm text-[#FDE7C2]">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#FFB866]">
+            Development account
+          </p>
+          <p>
+            Email: <span className="font-semibold text-[#FFF7ED]">{DEV_ACCOUNT_EMAIL}</span>
+          </p>
+          <p>
+            Password: <span className="font-semibold text-[#FFF7ED]">{DEV_ACCOUNT_PASSWORD}</span>
+          </p>
+        </div>
 
         <button
           type="button"

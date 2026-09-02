@@ -10,6 +10,11 @@ export async function updateSession(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[supabase/middleware] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY; skipping session refresh.',
+      )
+    }
     return supabaseResponse
   }
 

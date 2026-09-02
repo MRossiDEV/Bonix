@@ -200,6 +200,9 @@ export default function AdminPromosPage() {
   };
 
   useEffect(() => {
+    // Initial data load; setLoading/setErrorMessage inside loadData are
+    // expected for one-shot fetch on mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData().catch(() => {
       setLoading(false);
     });

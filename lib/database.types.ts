@@ -86,6 +86,23 @@ export interface Database {
           created_at?: string
         }
       }
+      user_favorite_merchants: {
+        Row: {
+          user_id: string
+          merchant_id: string
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          merchant_id: string
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          merchant_id?: string
+          created_at?: string
+        }
+      }
       merchants: {
         Row: {
           id: string

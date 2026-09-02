@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { LogoutButton } from "@/app/components/LogoutButton";
+import { Brain, Bell } from "lucide-react";
 
 type MerchantAppLayoutProps = {
   children: React.ReactNode;
@@ -30,19 +31,19 @@ const navItems: NavItem[] = [
     icon: ({ active }) => <GridIcon active={active} />,
   },
   {
-    path: "/promos",
-    label: "Promos",
-    icon: ({ active }) => <TagIcon active={active} />,
-  },
-  {
-    path: "/redemptions",
-    label: "Redemptions",
-    icon: ({ active }) => <ReceiptIcon active={active} />,
+    path: "/plans",
+    label: "Plans",
+    icon: ({ active }) => <Brain />,
   },
   {
     path: "/qr",
     label: "QR",
     icon: ({ active }) => <QrIcon active={active} />,
+  },
+  {
+    path: "/notifications",
+    label: "Notifications",
+    icon: ({ active }) => <Bell />,
   },
   {
     path: "/profile",
@@ -53,18 +54,18 @@ const navItems: NavItem[] = [
 
 const pageTitles = {
   "/dashboard": "Dashboard",
-  "/promos": "Promos",
+  "/plans": "Plans",
   "/redemptions": "Redemptions",
   "/qr": "QR",
   "/profile": "Profile",
 };
 
 const sideMenuItems = [
-  { label: "Store profile", path: "/profile" },
-  { label: "Payouts", path: "/dashboard" },
-  { label: "Team access", path: "/profile" },
-  { label: "Settings", path: "/profile" },
-  { label: "Support", path: "/profile" },
+  { label: "Store profile", path: "/company-profile" },
+  { label: "Reports & Stats", path: "/stats" },
+  { label: "Team access", path: "/staff" },
+  { label: "Settings", path: "/settings" },
+  { label: "Support", path: "/support" },
 ];
 
 export default function MerchantAppLayout({
@@ -119,10 +120,12 @@ export default function MerchantAppLayout({
     };
   }, [sideMenuOpen, avatarMenuOpen]);
 
-  useEffect(() => {
+  const prevPathnameRef = useRef(pathname);
+  if (prevPathnameRef.current !== pathname) {
+    prevPathnameRef.current = pathname;
     if (sideMenuOpen) setSideMenuOpen(false);
     if (avatarMenuOpen) setAvatarMenuOpen(false);
-  }, [pathname]);
+  }
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {

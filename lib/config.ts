@@ -1,17 +1,28 @@
+import { numericEnv, publicEnv, serverEnv } from './env'
 import { FeatureFlags } from './types'
 
 export const config = {
-  // JWT
-  jwtSecret: process.env.JWT_SECRET || 'default-secret-key',
+  // JWT (server-only; getter throws if missing or placeholder)
+  get jwtSecret(): string {
+    return serverEnv.jwtSecret
+  },
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
 
-  // QR Token
-  qrTokenSecret: process.env.QR_TOKEN_SECRET || 'default-qr-secret',
-  qrTokenTTL: parseInt(process.env.QR_TOKEN_TTL_MINUTES || '10', 10),
+  // QR Token (server-only; getter throws if missing or placeholder)
+  get qrTokenSecret(): string {
+    return serverEnv.qrTokenSecret
+  },
+  get qrTokenTTL(): number {
+    return numericEnv.qrTokenTTL
+  },
 
   // Platform fees
-  platformFee: parseInt(process.env.PLATFORM_FEE || '3', 10),
-  affiliateFee: parseInt(process.env.AFFILIATE_FEE || '5', 10),
+  get platformFee(): number {
+    return numericEnv.platformFee
+  },
+  get affiliateFee(): number {
+    return numericEnv.affiliateFee
+  },
 
   // Feature flags
   features: {
@@ -21,7 +32,9 @@ export const config = {
   } as FeatureFlags,
 
   // App
-  appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  get appUrl(): string {
+    return publicEnv.appUrl
+  },
   nodeEnv: process.env.NODE_ENV || 'development',
 
   // Reservation

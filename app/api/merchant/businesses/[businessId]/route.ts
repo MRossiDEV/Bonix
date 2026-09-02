@@ -65,7 +65,7 @@ export async function PATCH(
     return NextResponse.json({ error: "No updates provided" }, { status: 400 });
   }
 
-  let safePayload = { ...updatePayload };
+  const safePayload = { ...updatePayload };
   let data: Record<string, unknown> | null = null;
   let lastError: { message: string } | null = null;
 

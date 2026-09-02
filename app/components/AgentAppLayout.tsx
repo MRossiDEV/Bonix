@@ -4,9 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { LogoutButton } from "@/app/components/LogoutButton";
+import { BadgeDollarSign, Store, SquareChartGantt } from "lucide-react";
 
 type AgentAppLayoutProps = {
   children: React.ReactNode;
@@ -30,14 +31,19 @@ const navItems: NavItem[] = [
     icon: ({ active }) => <GridIcon active={active} />,
   },
   {
-    path: "/queue",
-    label: "Queue",
-    icon: ({ active }) => <InboxIcon active={active} />,
+    path: "/merchants",
+    label: "Merchants",
+    icon: ({ active }) => <Store />,
   },
   {
-    path: "/audits",
-    label: "Audits",
-    icon: ({ active }) => <ClipboardIcon active={active} />,
+    path: "/activity",
+    label: "Activity",
+    icon: ({ active }) => <SquareChartGantt />,
+  },
+  {
+    path: "/offers",
+    label: "Offers",
+    icon: ({ active }) => <BadgeDollarSign />,
   },
   {
     path: "/reports",
@@ -53,16 +59,17 @@ const navItems: NavItem[] = [
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
-  "/queue": "Queue",
-  "/audits": "Audits",
+  "/merchants": "Merchants",
+  "/activity": "Activity",
+  "/offers": "Offers",
   "/reports": "Reports",
   "/profile": "Profile",
 };
 
 const sideMenuItems = [
   { label: "Agent profile", path: "/profile" },
-  { label: "Escalations", path: "/queue" },
-  { label: "Audit log", path: "/audits" },
+  { label: "Updates", path: "/updates" },
+  { label: "Academy", path: "/academy" },
   { label: "Settings", path: "/profile" },
   { label: "Support", path: "/profile" },
 ];
@@ -119,10 +126,12 @@ export default function AgentAppLayout({
     };
   }, [sideMenuOpen, avatarMenuOpen]);
 
-  useEffect(() => {
+  const prevPathnameRef = useRef(pathname);
+  if (prevPathnameRef.current !== pathname) {
+    prevPathnameRef.current = pathname;
     if (sideMenuOpen) setSideMenuOpen(false);
     if (avatarMenuOpen) setAvatarMenuOpen(false);
-  }, [pathname]);
+  }
 
   const handleActiveTabClick = (href: string) => {
     if (pathname && pathname.startsWith(href)) {
