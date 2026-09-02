@@ -106,7 +106,16 @@ export default async function MerchantProfilePage({
       .order("created_at", { ascending: false });
 
     if (!result.error) {
-      rawBusinesses = (result.data ?? []) as unknown as Record<string, unknown>[];
+      const items = Array.isArray(result.data) ? result.data : [];
+      const normalizedBusinesses: Record<string, unknown>[] = [];
+
+      for (const item of items) {
+        if (typeof item === "object" && item !== null && !Array.isArray(item)) {
+          normalizedBusinesses.push(item as Record<string, unknown>);
+        }
+      }
+
+      rawBusinesses = normalizedBusinesses;
       lastErrorMessage = null;
       break;
     }
@@ -169,7 +178,7 @@ export default async function MerchantProfilePage({
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
-    .map((chunk) => chunk[0]?.toUpperCase() ?? "")
+    .map((chunk: string) => chunk[0]?.toUpperCase() ?? "")
     .join("") || "BM";
 
   return (

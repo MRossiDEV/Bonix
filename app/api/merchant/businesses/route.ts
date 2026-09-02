@@ -74,7 +74,16 @@ export async function GET() {
       .order("created_at", { ascending: false });
 
     if (!query.error) {
-      businesses = (query.data ?? []) as Record<string, unknown>[];
+      const rawBusinesses = Array.isArray(query.data) ? query.data : [];
+      const normalizedBusinesses: Record<string, unknown>[] = [];
+
+      for (const item of rawBusinesses) {
+        if (typeof item === "object" && item !== null && !Array.isArray(item)) {
+          normalizedBusinesses.push(item as Record<string, unknown>);
+        }
+      }
+
+      businesses = normalizedBusinesses;
       lastError = null;
       break;
     }

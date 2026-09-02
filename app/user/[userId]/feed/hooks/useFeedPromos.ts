@@ -50,13 +50,13 @@ export function useFeedPromos(): UseFeedPromosResult {
           ...card,
           merchantId: row.merchant_id,
           isFavorited: Boolean(row.is_favorited),
-          expiresAt: row.expires_at,
-          activatedAt: row.activated_at ?? row.created_at,
-          createdAt: row.created_at,
-          soldOutDurationSeconds: row.status === "SOLD_OUT" ? row.sold_out_duration_seconds : null,
-          remaining: row.available_slots,
-          total: row.total_slots,
-          hot: row.available_slots <= 3 || expiringSoon,
+          expiresAt: row.expires_at ?? new Date().toISOString(),
+          activatedAt: row.activated_at ?? row.created_at ?? new Date().toISOString(),
+          createdAt: row.created_at ?? new Date().toISOString(),
+          soldOutDurationSeconds: row.status === "SOLD_OUT" ? (row.sold_out_duration_seconds ?? null) : null,
+          remaining: Number(row.available_slots ?? 0),
+          total: Number(row.total_slots ?? 0),
+          hot: Number(row.available_slots ?? 0) <= 3 || expiringSoon,
         } satisfies FeedPromo;
       });
 

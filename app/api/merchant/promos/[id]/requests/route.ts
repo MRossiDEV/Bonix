@@ -5,6 +5,23 @@ import { createClient } from "@/lib/supabase/server";
 
 type PromoAction = "ACTIVATE" | "PAUSE" | "DEACTIVATE" | "DELETE" | "EDIT";
 
+type PromoRecord = {
+  id: string;
+  merchant_id: string;
+  status: string | null;
+  title: string | null;
+  description: string | null;
+  image?: string | null;
+  original_price: number | string | null;
+  discounted_price: number | string | null;
+  cashback_percent: number | string | null;
+  total_slots: number | null;
+  available_slots: number | null;
+  category?: string | null;
+  starts_at?: string | null;
+  expires_at: string | null;
+};
+
 function isValidAction(value: unknown): value is PromoAction {
   return ["ACTIVATE", "PAUSE", "DEACTIVATE", "DELETE", "EDIT"].includes(String(value));
 }
@@ -55,7 +72,7 @@ export async function POST(
     .is("deleted_at", null)
     .maybeSingle();
 
-  let promo = primaryPromo.data;
+  let promo: PromoRecord | null = primaryPromo.data as PromoRecord | null;
   let promoError = primaryPromo.error;
 
   if (!promo && promoError && isMissingDeletedAt(promoError.message)) {
@@ -67,7 +84,7 @@ export async function POST(
       .eq("id", id)
       .eq("merchant_id", merchantResult.context.merchantId)
       .maybeSingle();
-    promo = legacyPromo.data;
+    promo = legacyPromo.data as PromoRecord | null;
     promoError = legacyPromo.error;
   }
 

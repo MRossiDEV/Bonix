@@ -1,7 +1,8 @@
+import { mapPromoRowToCard } from "@/lib/promos";
 import { createClient } from "@/lib/supabase/client";
+import type { PromoCardData } from "@/types/promos";
 
-
-export default async function getActivePromos() {
+export default async function getActivePromos(): Promise<PromoCardData[]> {
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -74,7 +75,7 @@ export default async function getActivePromos() {
       "SUPABASE PROMOS ERROR:",
       error.message,
       error.details,
-      error.hint
+      error.hint,
     );
 
     return [];
@@ -89,17 +90,29 @@ export default async function getActivePromos() {
       ? promo.merchants[0]
       : promo.merchants;
 
-    return {
+    return mapPromoRowToCard({
       ...promo,
-
+      slug: promo.slug ?? String(promo.id),
       merchant: merchant
         ? {
             business_name: merchant.business_name,
             logo_url: merchant.logo_url ?? null,
-            neighborhood:
-              merchant.neighborhood ?? null,
+            neighborhood: merchant.neighborhood ?? null,
           }
         : null,
-    };
+      neighborhood: promo.neighborhood ?? merchant?.neighborhood ?? "Montevideo",
+      category: promo.category ?? null,
+      is_featured: Boolean(promo.is_featured),
+      views_count: promo.views_count ?? 0,
+      likes_count: promo.likes_count ?? 0,
+      comments_count: promo.comments_count ?? 0,
+      saves_count: promo.saves_count ?? 0,
+      shares_count: promo.shares_count ?? 0,
+      redemption_count: promo.redemption_count ?? 0,
+      rating: promo.rating ?? null,
+      reviews_count: promo.reviews_count ?? 0,
+      tags: Array.isArray(promo.tags) ? promo.tags : [],
+      created_at: promo.created_at ?? new Date().toISOString(),
+    });
   });
 }

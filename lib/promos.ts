@@ -1,7 +1,8 @@
 import { getPromoImageUrl } from "@/lib/promo-image";
 
-import { PromoCardData } from "@/types/promos";
-import { PromoRow } from "@/types/promos";
+import type { PromoCardData, PromoRow } from "@/types/promos";
+
+export type { PromoCardData, PromoRow } from "@/types/promos";
 
 function toNumber(value: number | string | undefined): number {
   if (typeof value === "number") return value;
@@ -37,16 +38,18 @@ export function mapPromoRowToCard(
 
   const discountedPrice = toNumber(row.discounted_price);
 
+  const merchant = Array.isArray(row.merchant) ? row.merchant[0] ?? null : row.merchant;
+
   return {
     id: row.id,
 
-    slug: row.slug,
+    slug: row.slug ?? row.id,
 
     merchantName:
-      row.merchant?.business_name ?? "Bonix Partner",
+      merchant?.business_name ?? "Bonix Partner",
 
     merchantLogoUrl:
-      row.merchant?.logo_url ?? null,
+      merchant?.logo_url ?? null,
 
     title: row.title,
 

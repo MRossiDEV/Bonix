@@ -27,6 +27,15 @@ import { PromoCardData } from "@/types/promos";
 
 import getActivePromos from "@/lib/promos/get-promos";
 
+type PromoFeedProps = {
+  promos?: PromoCardData[];
+  title?: string;
+  subtitle?: string;
+  limit?: number;
+  showViewAll?: boolean;
+  compact?: boolean;
+};
+
 const quickFilters = [
   "Under $300",
   "2x1",
@@ -38,10 +47,17 @@ const quickFilters = [
   "Happy Hour",
 ];
 
-export function PromoFeed() {
+export function PromoFeed({
+  promos: initialPromos = [],
+  title = "Bonix Feed",
+  subtitle = "Discover nearby deals",
+  limit,
+  showViewAll = false,
+  compact = false,
+}: PromoFeedProps) {
   const [items, setItems] = useState<
     PromoCardData[]
-  >([]);
+  >(() => initialPromos);
 
   const [loading, setLoading] =
     useState(true);
@@ -78,11 +94,16 @@ export function PromoFeed() {
   );
 
   useEffect(() => {
+    if (initialPromos.length > 0) {
+      setItems(initialPromos);
+      return;
+    }
+
     // Initial data load; setState inside fetchPromos is expected for
     // one-shot fetch on mount.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchPromos();
-  }, [fetchPromos]);
+  }, [fetchPromos, initialPromos]);
 
   const filteredItems = useMemo(() => {
     let filtered = [...items];
@@ -131,18 +152,22 @@ export function PromoFeed() {
         break;
     }
 
-    return filtered;
+    return typeof limit === "number"
+      ? filtered.slice(0, limit)
+      : filtered;
   }, [
     items,
     search,
     selectedFilter,
+    limit,
   ]);
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white">
+    <div className={`${compact ? "min-h-fit" : "min-h-screen"} bg-[#080808] text-white`}>
       {/* HEADER */}
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#080808]/80 backdrop-blur-2xl">
-        <div className="px-4 pb-4 pt-safe">
+      {!compact ? (
+        <header className="sticky top-0 z-50 border-b border-white/5 bg-[#080808]/80 backdrop-blur-2xl">
+          <div className="px-4 pb-4 pt-safe">
           {/* TOP BAR */}
           <div className="flex items-center justify-between pt-4">
             <div>
@@ -238,11 +263,27 @@ export function PromoFeed() {
               )}
             </div>
           </div>
+          </div>
+        </header>
+      ) : (
+        <div className="px-6 pt-10">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm uppercase tracking-[0.28em] text-[#9CA3AF]">Live feed</p>
+              <h2 className="mt-2 text-2xl font-semibold text-white">{title}</h2>
+            </div>
+            {showViewAll ? (
+              <Link href="/feed" className="text-sm font-semibold text-[#FF7A00]">
+                View all
+              </Link>
+            ) : null}
+          </div>
+          {subtitle ? <p className="mt-2 text-sm text-[#9CA3AF]">{subtitle}</p> : null}
         </div>
-      </header>
+      )}
 
       {/* FEED */}
-      <main className="space-y-5 px-4 pb-32 pt-5">
+      <main className={`${compact ? "px-6 pb-10 pt-5" : "space-y-5 px-4 pb-32 pt-5"}`}>
         {/* STATE */}
         {loading && (
           <>

@@ -1,24 +1,9 @@
-import { PromoCardData } from "@/lib/promos";
+import type { PromoCardData, PromoRow as SharedPromoRow } from "@/types/promos";
 
-export type PromoRow = {
-  id: string;
-  merchant_id: string;
-  title: string;
-  description: string;
-  original_price: number | string;
-  discounted_price: number | string;
-  cashback_percent: number | string;
-  image: string | null;
-  expires_at: string;
-  total_slots: number;
-  available_slots: number;
-  status: string;
-  is_featured: boolean;
-  category: string | null;
-  sold_out_duration_seconds: number | null;
-  activated_at: string | null;
-  created_at: string;
+export type PromoRow = SharedPromoRow & {
   merchant: { business_name: string; logo_url: string | null } | null;
+  activated_at?: string | null;
+  sold_out_duration_seconds?: number | null;
   is_favorited?: boolean;
 };
 

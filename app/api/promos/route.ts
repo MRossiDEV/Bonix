@@ -26,7 +26,8 @@ type PromoRow = {
   is_favorited?: boolean;
 };
 
-type PromoRowRaw = Omit<PromoRow, "merchant"> & {
+type PromoRowRaw = Omit<PromoRow, "merchant" | "sold_out_duration_seconds"> & {
+  sold_out_duration_seconds?: number | null;
   merchant: { business_name: string; logo_url: string | null }[] | null;
 };
 
@@ -91,8 +92,8 @@ export async function GET(request: Request) {
     const merchant = Array.isArray(row.merchant) ? row.merchant[0] ?? null : row.merchant;
     return {
       ...row,
+      sold_out_duration_seconds: row.sold_out_duration_seconds ?? null,
       merchant,
-      sold_out_duration_seconds: null,
       is_favorited: favoriteMerchantIds.has(row.merchant_id),
     };
   });

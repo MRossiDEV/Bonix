@@ -81,7 +81,7 @@ export default async function MerchantLayout({
       .split(" ")
       .filter(Boolean)
       .slice(0, 2)
-      .map((chunk) => chunk[0]?.toUpperCase() ?? "")
+      .map((chunk: string) => chunk[0]?.toUpperCase() ?? "")
       .join("") || "BM";
 
   return (

@@ -442,9 +442,9 @@ function formatTimeLeft(expiresAt?: string) {
 // }
 
 export default function FeedPage() {
-  const promos = getActivePromos();
-  return
+  return (
     <div>
-      <PromoFeed promos={promos} />
-    </div>;
+      <PromoFeed />
+    </div>
+  );
 }

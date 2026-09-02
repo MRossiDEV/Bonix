@@ -329,10 +329,14 @@ export default async function UserMerchantPromosPage({
   const promos = promoRows.map((row) =>
     mapPromoRowToCard({
       ...row,
+      merchant_id: merchantId,
+      slug: row.id,
       merchant: {
         business_name: merchantName,
         logo_url: merchantLogo,
+        neighborhood: merchant?.neighborhood ?? null,
       },
+      neighborhood: merchant?.neighborhood ?? null,
     }),
   );
 
@@ -632,7 +636,7 @@ export default async function UserMerchantPromosPage({
                       ?.split(" ")
                       .filter(Boolean)
                       .slice(0, 2)
-                      .map((chunk) => chunk[0]?.toUpperCase() ?? "")
+                      .map((chunk: string) => chunk[0]?.toUpperCase() ?? "")
                       .join("") ?? "MP";
 
                   return (

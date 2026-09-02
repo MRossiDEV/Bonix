@@ -34,15 +34,20 @@ type LegacyPromoListRow = {
   id: string;
   title: string;
   description: string;
+  image?: string | null;
   original_price: number;
   discounted_price: number;
   cashback_percent: number;
   total_slots: number;
   available_slots: number;
+  category?: string | null;
+  starts_at?: string | null;
+  expires_at?: string | null;
   status: "DRAFT" | "ACTIVE" | "PAUSED" | "SOLD_OUT" | "EXPIRED" | "DISABLED";
   activity_state?: PromoActivityState;
   created_at: string;
   updated_at: string;
+  deleted_at?: string | null;
 };
 
 function isMissingColumnError(message: string): boolean {
@@ -169,12 +174,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: legacyError.message }, { status: 400 });
     }
 
-    const legacyNormalized = ((legacyData ?? []) as LegacyPromoListRow[]).map((row) => ({
+    const legacyNormalized: PromoListRow[] = ((legacyData ?? []) as LegacyPromoListRow[]).map((row) => ({
       ...row,
-      activity_state: getPromoActivityState(row.status),
       image: null,
       category: null,
       starts_at: null,
+      expires_at: row.expires_at ?? new Date().toISOString(),
+      activity_state: getPromoActivityState(row.status),
       deleted_at: null,
     }));
 
