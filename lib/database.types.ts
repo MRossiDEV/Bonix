@@ -19,6 +19,33 @@ export type PromoStatus =
   | 'EXPIRED'
 export type PromoActivityState = 'ACTIVE' | 'UNACTIVE'
 export type ReservationStatus = 'ACTIVE' | 'EXPIRED' | 'REDEEMED' | 'CANCELLED'
+export type AssetType = 'BUILDING' | 'VEGETATION' | 'PROP' | 'ENVIRONMENT' | 'CHARACTER'
+export type AssetStatus = 'DRAFT' | 'PROCESSING' | 'PUBLISHED' | 'ARCHIVED'
+export type WorldType = 'CITY' | 'DISTRICT' | 'MERCHANT'
+export type WorldTheme =
+  | 'MODERN'
+  | 'INDUSTRIAL'
+  | 'JAPANESE'
+  | 'RUSTIC'
+  | 'URBAN'
+  | 'LUXURY'
+  | 'NEUTRAL'
+export type SlotType = 'BUILDING' | 'DECORATION' | 'EMPTY'
+export type BuildingState =
+  | 'NORMAL'
+  | 'NEW'
+  | 'RESERVED'
+  | 'VISITED'
+  | 'ACTIVE_PROMO'
+  | 'LIMITED_PROMO'
+export type CityProgressEventKind =
+  | 'FAVORITE_ADDED'
+  | 'SLOT_UNLOCKED'
+  | 'PROMO_PLACED'
+  | 'PROMO_REDEEMED'
+  | 'BUILDING_PLACED'
+  | 'BUILDING_VISITED'
+  | 'LEVEL_UP'
 export type RedemptionStatus = 'PENDING' | 'CONFIRMED' | 'FAILED' | 'REFUNDED'
 export type PaymentType = 'FULL_WALLET' | 'PARTIAL_WALLET' | 'IN_STORE'
 
@@ -102,6 +129,452 @@ export interface Database {
           merchant_id?: string
           created_at?: string
         }
+      }
+      assets: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          asset_type: AssetType
+          category: string
+          file_url: string
+          thumbnail_url: string | null
+          preview_url: string | null
+          metadata: Json
+          version: number
+          status: AssetStatus
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          asset_type: AssetType
+          category: string
+          file_url: string
+          thumbnail_url?: string | null
+          preview_url?: string | null
+          metadata?: Json
+          version?: number
+          status?: AssetStatus
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          asset_type?: AssetType
+          category?: string
+          file_url?: string
+          thumbnail_url?: string | null
+          preview_url?: string | null
+          metadata?: Json
+          version?: number
+          status?: AssetStatus
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      asset_versions: {
+        Row: {
+          id: string
+          asset_id: string
+          version: number
+          file_url: string
+          thumbnail_url: string | null
+          metadata: Json
+          is_current: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          asset_id: string
+          version: number
+          file_url: string
+          thumbnail_url?: string | null
+          metadata?: Json
+          is_current?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          asset_id?: string
+          version?: number
+          file_url?: string
+          thumbnail_url?: string | null
+          metadata?: Json
+          is_current?: boolean
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'asset_versions_asset_id_fkey'
+            columns: ['asset_id']
+            isOneToOne: false
+            referencedRelation: 'assets'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      building_templates: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          category: string
+          base_asset_id: string
+          description: string | null
+          configuration: Json
+          thumbnail_url: string | null
+          status: AssetStatus
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          category: string
+          base_asset_id: string
+          description?: string | null
+          configuration?: Json
+          thumbnail_url?: string | null
+          status?: AssetStatus
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          category?: string
+          base_asset_id?: string
+          description?: string | null
+          configuration?: Json
+          thumbnail_url?: string | null
+          status?: AssetStatus
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'building_templates_base_asset_id_fkey'
+            columns: ['base_asset_id']
+            isOneToOne: false
+            referencedRelation: 'assets'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      building_template_components: {
+        Row: {
+          id: string
+          template_id: string
+          asset_id: string
+          component_type: string
+          position: Json
+          rotation: Json
+          scale: Json
+          configuration: Json
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          template_id: string
+          asset_id: string
+          component_type: string
+          position?: Json
+          rotation?: Json
+          scale?: Json
+          configuration?: Json
+          sort_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          template_id?: string
+          asset_id?: string
+          component_type?: string
+          position?: Json
+          rotation?: Json
+          scale?: Json
+          configuration?: Json
+          sort_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'building_template_components_asset_id_fkey'
+            columns: ['asset_id']
+            isOneToOne: false
+            referencedRelation: 'assets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'building_template_components_template_id_fkey'
+            columns: ['template_id']
+            isOneToOne: false
+            referencedRelation: 'building_templates'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      worlds: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          slug: string
+          world_type: WorldType
+          level: number
+          theme: WorldTheme
+          max_slots: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          slug: string
+          world_type?: WorldType
+          level?: number
+          theme?: WorldTheme
+          max_slots?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          slug?: string
+          world_type?: WorldType
+          level?: number
+          theme?: WorldTheme
+          max_slots?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'worlds_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      world_slots: {
+        Row: {
+          id: string
+          world_id: string
+          slot_key: string
+          x: number
+          y: number
+          z: number
+          rotation_x: number
+          rotation_y: number
+          rotation_z: number
+          scale: number
+          slot_type: SlotType
+          occupied: boolean
+          unlock_level: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          slot_key: string
+          x?: number
+          y?: number
+          z?: number
+          rotation_x?: number
+          rotation_y?: number
+          rotation_z?: number
+          scale?: number
+          slot_type?: SlotType
+          occupied?: boolean
+          unlock_level?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          slot_key?: string
+          x?: number
+          y?: number
+          z?: number
+          rotation_x?: number
+          rotation_y?: number
+          rotation_z?: number
+          scale?: number
+          slot_type?: SlotType
+          occupied?: boolean
+          unlock_level?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'world_slots_world_id_fkey'
+            columns: ['world_id']
+            isOneToOne: false
+            referencedRelation: 'worlds'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      world_buildings: {
+        Row: {
+          id: string
+          world_id: string
+          slot_id: string
+          merchant_id: string | null
+          building_template_id: string | null
+          customization_id: string | null
+          state: BuildingState
+          placed_at: string
+          last_visited_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          world_id: string
+          slot_id: string
+          merchant_id?: string | null
+          building_template_id?: string | null
+          customization_id?: string | null
+          state?: BuildingState
+          placed_at?: string
+          last_visited_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          world_id?: string
+          slot_id?: string
+          merchant_id?: string | null
+          building_template_id?: string | null
+          customization_id?: string | null
+          state?: BuildingState
+          placed_at?: string
+          last_visited_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'world_buildings_world_id_fkey'
+            columns: ['world_id']
+            isOneToOne: false
+            referencedRelation: 'worlds'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'world_buildings_slot_id_fkey'
+            columns: ['slot_id']
+            isOneToOne: true
+            referencedRelation: 'world_slots'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'world_buildings_merchant_id_fkey'
+            columns: ['merchant_id']
+            isOneToOne: false
+            referencedRelation: 'merchants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'world_buildings_building_template_id_fkey'
+            columns: ['building_template_id']
+            isOneToOne: false
+            referencedRelation: 'building_templates'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'world_buildings_customization_id_fkey'
+            columns: ['customization_id']
+            isOneToOne: false
+            referencedRelation: 'merchant_3d_customizations'
+            referencedColumns: ['id']
+          }
+        ]
+      }
+      merchant_3d_customizations: {
+        Row: {
+          id: string
+          merchant_id: string
+          building_template_id: string | null
+          logo_url: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          sign_text: string | null
+          sign_asset_id: string | null
+          interior_theme: WorldTheme | null
+          configuration: Json
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          merchant_id: string
+          building_template_id?: string | null
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          sign_text?: string | null
+          sign_asset_id?: string | null
+          interior_theme?: WorldTheme | null
+          configuration?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          merchant_id?: string
+          building_template_id?: string | null
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          sign_text?: string | null
+          sign_asset_id?: string | null
+          interior_theme?: WorldTheme | null
+          configuration?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'merchant_3d_customizations_merchant_id_fkey'
+            columns: ['merchant_id']
+            isOneToOne: true
+            referencedRelation: 'merchants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'merchant_3d_customizations_building_template_id_fkey'
+            columns: ['building_template_id']
+            isOneToOne: false
+            referencedRelation: 'building_templates'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'merchant_3d_customizations_sign_asset_id_fkey'
+            columns: ['sign_asset_id']
+            isOneToOne: false
+            referencedRelation: 'assets'
+            referencedColumns: ['id']
+          }
+        ]
       }
       merchants: {
         Row: {
@@ -533,6 +1006,45 @@ export interface Database {
           status?: string
           created_at?: string
         }
+      }
+      city_progress_events: {
+        Row: {
+          id: string
+          user_id: string
+          world_id: string | null
+          kind: CityProgressEventKind
+          slot_id: string | null
+          merchant_id: string | null
+          promo_id: string | null
+          points: number
+          metadata: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          world_id?: string | null
+          kind: CityProgressEventKind
+          slot_id?: string | null
+          merchant_id?: string | null
+          promo_id?: string | null
+          points?: number
+          metadata?: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          world_id?: string | null
+          kind?: CityProgressEventKind
+          slot_id?: string | null
+          merchant_id?: string | null
+          promo_id?: string | null
+          points?: number
+          metadata?: Json
+          created_at?: string
+        }
+        Relationships: []
       }
     }
     Functions: {

@@ -4,6 +4,16 @@ import type { NextConfig } from "next";
 // left out for now — adopting a strict CSP requires a per-request nonce
 // integration with Next.js inline scripts, which is tracked separately in
 // md/ProductionReadiness.md.
+// COOP/COEP opt the document into cross-origin isolation, which
+// unblocks OffscreenCanvas + SharedArrayBuffer — both useful for
+// R3F's GLB decode + LOD streaming (PRD §82). Without this some
+// browsers throttle 3D work to a single thread.
+const crossOriginIsolationHeaders = [
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-site" },
+];
+
 const securityHeaders = [
   {
     key: "Strict-Transport-Security",
@@ -46,6 +56,10 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: securityHeaders,
+      },
+      {
+        source: "/:path*",
+        headers: crossOriginIsolationHeaders,
       },
     ];
   },

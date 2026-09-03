@@ -520,7 +520,7 @@ export default async function UserMerchantPromosPage({
               </div>
 
               <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                <FavoriteMerchantButton merchantId={merchant.id} initialIsFavorited={initialIsFavorited} />
+                <FavoriteMerchantButton merchantId={merchant.id} initialIsFavorited={initialIsFavorited} redirectToCityUserId={resolvedUserId} />
  
               </div>
             </div>

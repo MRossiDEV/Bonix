@@ -78,6 +78,21 @@ The database consists of 8 main tables:
 7. **merchant_balances** - Monthly merchant settlements
 8. **audit_logs** - System audit trail
 
+### 3D World Engine tables (migration `026_3d_world_engine.sql`)
+
+The Bonix 3D World Engine adds eight tables to back `/city` and the admin Studio:
+
+- **assets** - Reusable GLB library (restaurants, props, vegetation).
+- **asset_versions** - Versioned history for each asset.
+- **building_templates** - Reusable composition of one base asset + decorations.
+- **building_template_components** - Decoration slots inside a template.
+- **worlds** - User-owned miniature cities, districts, or merchant interiors.
+- **world_slots** - Predefined positions inside a world.
+- **world_buildings** - A merchant's placed building in a slot.
+- **merchant_3d_customizations** - Per-merchant branding (color, logo, sign text).
+
+It also provisions five Storage buckets: `bonix-3d-assets`, `bonix-3d-thumbnails`, `bonix-3d-previews`, `bonix-3d-environments`, `bonix-merchant-branding`.
+
 ## Row Level Security (RLS)
 
 All tables have RLS enabled. Users can only access data they own or are authorized to view. Merchants can only manage their own promos, and admins have full access.

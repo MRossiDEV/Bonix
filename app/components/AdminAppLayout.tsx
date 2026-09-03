@@ -51,8 +51,8 @@ const navItems: NavItem[] = [
     icon: ({ active }) => <TagIcon active={active} />,
   },
   {
-    path: "/profile",
-    label: "Profile",
+    path: "/studio",
+    label: "Studio",
     icon: ({ active }) => <UserIcon active={active} />,
   },
   {
@@ -68,7 +68,7 @@ const pageTitles: Record<string, string> = {
   "/merchants": "Merchants",
   "/agents": "Agents",
   "/promos": "Promos",
-  "/profile": "Profile",
+  "/studio": "Studio",
   "/settings": "Settings",
 };
 

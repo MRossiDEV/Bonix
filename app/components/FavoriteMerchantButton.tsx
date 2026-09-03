@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type FavoriteMerchantButtonProps = {
   merchantId: string;
   initialIsFavorited?: boolean;
   className?: string;
+  // When provided, a successful POST (favoriting) navigates to the
+  // user's city with a ?place= query so the 3D world can drop the
+  // merchant into an empty slot (PRD §80).
+  redirectToCityUserId?: string;
 };
 
 type FavoritesResponse = {
@@ -16,7 +21,9 @@ export function FavoriteMerchantButton({
   merchantId,
   initialIsFavorited,
   className,
+  redirectToCityUserId,
 }: FavoriteMerchantButtonProps) {
+  const router = useRouter();
   const [isFavorited, setIsFavorited] = useState(initialIsFavorited ?? false);
   const [isBusy, setIsBusy] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -80,6 +87,12 @@ export function FavoriteMerchantButton({
 
       if (!response.ok) {
         throw new Error("Unable to update favorite business.");
+      }
+
+      // Only redirect when we're adding the favorite, not removing
+      // it. Avoids the surprising "where did I go?" after unstar.
+      if (nextFavorited && redirectToCityUserId) {
+        router.push(`/user/${redirectToCityUserId}/city?place=${merchantId}`);
       }
     } catch {
       setIsFavorited(!nextFavorited);
