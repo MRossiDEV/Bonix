@@ -64,8 +64,8 @@ function PrimitiveFallback({
       <mesh position={[0, 1.4, 0.71]}>
         <planeGeometry args={[1.2, 0.5]} />
         <meshStandardMaterial
-          color={emissive ?? "#22C55E"}
-          emissive={emissive ?? "#22C55E"}
+          color={emissive ?? "#F8FAFC"}
+          emissive={emissive ?? "#F8FAFC"}
           emissiveIntensity={emissiveIntensity + 0.4}
           transparent
           opacity={0.85}

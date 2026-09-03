@@ -34,7 +34,7 @@ function SlotRing({
     >
       <ringGeometry args={[0.85, 1.05, 32]} />
       <meshBasicMaterial
-        color="#22C55E"
+        color="#F8FAFC"
         transparent
         opacity={highlight ? 0.9 : 0.45}
         side={THREE.DoubleSide}

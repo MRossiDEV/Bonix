@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import UserAppLayout from "@/app/components/UserAppLayout";
@@ -23,6 +24,12 @@ export default async function UserLayout({
     fallbackEmail: `${userId}@bonix.app`,
   });
 
+  const headerStore = await headers();
+  const pathname = headerStore.get("x-pathname") ?? "";
+  const isCity = pathname.endsWith("/city");
+  const topBarHidden = isCity;
+  const fullBleed = isCity;
+
   return (
     <UserAppLayout
       basePath={`/user/${userId}`}
@@ -30,8 +37,10 @@ export default async function UserLayout({
       userEmail={profile.email}
       userInitials={profile.initials}
       userAvatarUrl={profile.avatarUrl}
+      topBarHidden={topBarHidden}
+      fullBleed={fullBleed}
     >
       {children}
-    </UserAppLayout>
+   </UserAppLayout>
   );
 }

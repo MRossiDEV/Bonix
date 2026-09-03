@@ -13,7 +13,7 @@ export const MOCK_WORLD = {
   name: "My City",
   level: 1,
   theme: "NIGHT" as const,
-  maxSlots: 10,
+  maxSlots: 9,
 };
 
 export const MOCK_ASSETS: Record<string, BonixAssetDefinition> = {
@@ -68,89 +68,54 @@ export const MOCK_ASSETS: Record<string, BonixAssetDefinition> = {
   },
 };
 
+// SimCity-style layout: a central road runs along Z. Slots sit in
+// two rows flanking the road, facing inward (left row faces +X,
+// right row faces -X). z = -5, -1.7, 1.6, 5 — 4 slots per side.
+const ROW_X = 3.2;
+const SLOT_Z = [-5, -1.7, 1.6, 5];
+
+const leftSlots: BuildingSlot[] = SLOT_Z.map((z, i) => ({
+  id: `slot-left-${i + 1}`,
+  slotKey: `L-${String(i + 1).padStart(2, "0")}`,
+  position: [-ROW_X, 0, z],
+  rotationY: Math.PI / 2, // face the road (+X)
+  scale: 1,
+  slotType: "ANY" as const,
+  occupied: i < 2,
+}));
+
+const rightSlots: BuildingSlot[] = SLOT_Z.map((z, i) => ({
+  id: `slot-right-${i + 1}`,
+  slotKey: `R-${String(i + 1).padStart(2, "0")}`,
+  position: [ROW_X, 0, z],
+  rotationY: -Math.PI / 2, // face the road (-X)
+  scale: 1,
+  slotType: "ANY" as const,
+  occupied: i < 2,
+}));
+
 export const MOCK_SLOTS: BuildingSlot[] = [
+  // Left row occupied
+  leftSlots[0],
+  leftSlots[1],
+  // Right row occupied
+  rightSlots[0],
+  rightSlots[1],
+  // Center landmark spot (occupied) — sits across the road median
   {
-    id: "slot-1",
-    slotKey: "A-01",
-    position: [-3.5, 0, 1.5],
-    rotationY: 0.3,
-    scale: 1,
-    slotType: "RESTAURANT",
-    occupied: true,
-  },
-  {
-    id: "slot-2",
-    slotKey: "A-02",
-    position: [2.5, 0, 1.5],
-    rotationY: -0.3,
-    scale: 1,
-    slotType: "CAFE",
-    occupied: true,
-  },
-  {
-    id: "slot-3",
-    slotKey: "B-01",
-    position: [4.2, 0, -2.2],
-    rotationY: Math.PI - 0.4,
-    scale: 1,
-    slotType: "RESTAURANT",
-    occupied: true,
-  },
-  {
-    id: "slot-4",
-    slotKey: "B-02",
-    position: [-4.2, 0, -2.2],
-    rotationY: Math.PI + 0.3,
-    scale: 1,
-    slotType: "FITNESS",
-    occupied: true,
-  },
-  {
-    id: "slot-5",
+    id: "slot-center-1",
     slotKey: "C-01",
-    position: [-1.2, 0, -4.5],
-    rotationY: Math.PI,
-    scale: 1,
+    position: [0, 0, -7.5],
+    rotationY: 0,
+    scale: 1.2,
     slotType: "HOTEL",
     occupied: true,
   },
-  // Empty slots
-  {
-    id: "slot-6",
-    slotKey: "A-03",
-    position: [-1.2, 0, 4.2],
-    rotationY: 0,
-    scale: 1,
-    slotType: "ANY",
-    occupied: false,
-  },
-  {
-    id: "slot-7",
-    slotKey: "B-03",
-    position: [1.2, 0, 4.2],
-    rotationY: 0,
-    scale: 1,
-    slotType: "ANY",
-    occupied: false,
-  },
-  {
-    id: "slot-8",
-    slotKey: "C-02",
-    position: [0, 0, 1.5],
-    rotationY: 0,
-    scale: 1,
-    slotType: "ANY",
-    occupied: false,
-  },
-  {
-    id: "slot-9",
-    slotKey: "C-03",
-    position: [0, 0, -4.5],
-    rotationY: Math.PI,
-    scale: 1,
-    slotType: "ANY",
-    occupied: false,
-  },
+  // Empty slots — remaining
+  leftSlots[2],
+  leftSlots[3],
+  rightSlots[2],
+  rightSlots[3],
 ];
 
 export const MOCK_BUILDINGS: WorldBuildingData[] = [
@@ -170,7 +135,7 @@ export const MOCK_BUILDINGS: WorldBuildingData[] = [
     secondaryColor: "#F8FAFC",
     signText: "LA COCINA VERDE",
     level: 3,
-    slotId: "slot-1",
+    slotId: "slot-left-1",
   },
   {
     id: "building-2",
@@ -188,7 +153,7 @@ export const MOCK_BUILDINGS: WorldBuildingData[] = [
     secondaryColor: "#FFFBEB",
     signText: "MVDEO BREW",
     level: 2,
-    slotId: "slot-2",
+    slotId: "slot-right-1",
   },
   {
     id: "building-3",
@@ -204,7 +169,7 @@ export const MOCK_BUILDINGS: WorldBuildingData[] = [
     secondaryColor: "#FAF5FF",
     signText: "CASA NÓMADA",
     level: 2,
-    slotId: "slot-3",
+    slotId: "slot-right-2",
   },
   {
     id: "building-4",
@@ -220,7 +185,7 @@ export const MOCK_BUILDINGS: WorldBuildingData[] = [
     secondaryColor: "#F0F9FF",
     signText: "BARRIO FITNESS",
     level: 1,
-    slotId: "slot-4",
+    slotId: "slot-left-2",
   },
   {
     id: "building-5",
@@ -236,6 +201,6 @@ export const MOCK_BUILDINGS: WorldBuildingData[] = [
     secondaryColor: "#F8FAFC",
     signText: "HOTEL RAMBLA",
     level: 4,
-    slotId: "slot-5",
+    slotId: "slot-center-1",
   },
 ];

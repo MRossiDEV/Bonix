@@ -24,7 +24,7 @@ export function BuildingBranding({
   position,
   logoUrl,
   signText,
-  primaryColor = "#22C55E",
+  primaryColor = "#E5E7EB",
   height = 1.8,
 }: BuildingBrandingProps) {
   const [logoTexture, setLogoTexture] = useState<THREE.Texture | null>(null);

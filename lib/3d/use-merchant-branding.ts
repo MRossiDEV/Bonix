@@ -18,8 +18,8 @@ export type MerchantBranding = {
 };
 
 const DEFAULT_BRANDING = {
-  primaryColor: "#22C55E",
-  secondaryColor: "#F8FAFC",
+  primaryColor: "#94A3B8",
+  secondaryColor: "#f8fafc00",
   signText: null as string | null,
   logoUrl: null as string | null,
   buildingTemplateId: null as string | null,

@@ -45,7 +45,7 @@ export default function BonixWorld({
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[28px] bg-[#091018]">
+    <div className="relative h-full w-full overflow-hidden bg-[#091018]">
       <Canvas
         shadows
         dpr={[1, 2]}

@@ -16,6 +16,8 @@ type UserAppLayoutProps = {
   userInitials?: string;
   userAvatarUrl?: string;
   hideBottomNav?: boolean;
+  topBarHidden?: boolean;
+  fullBleed?: boolean;
 };
 
 type NavItem = {
@@ -96,6 +98,8 @@ export default function UserAppLayout({
   userInitials = "AB",
   userAvatarUrl,
   hideBottomNav = false,
+  topBarHidden = false,
+  fullBleed = false,
 }: UserAppLayoutProps) {
   const pathname = usePathname();
 
@@ -186,7 +190,8 @@ export default function UserAppLayout({
           TOP BAR
       ============================================================ */}
 
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#1F2937] bg-[#0B0F14]/90 backdrop-blur-xl">
+      {topBarHidden ? null : (
+        <header className="fixed inset-x-0 top-0 z-40 border-b border-[#1F2937] bg-[#0B0F14]/90 backdrop-blur-xl">
 
         <div className="mx-auto flex h-[68px] w-full max-w-xl items-center justify-between px-4 sm:px-6">
 
@@ -252,17 +257,20 @@ export default function UserAppLayout({
           </button>
         </div>
       </header>
+      )}
 
       {/* ============================================================
           MAIN
       ============================================================ */}
 
       <main
-        className={`relative z-10 mx-auto min-h-screen w-full max-w-xl ${
+        className={`relative z-10 ${
+          fullBleed ? "" : "mx-auto w-full max-w-xl"
+        } min-h-screen ${
           hideBottomNav
             ? "pb-8"
             : "pb-[calc(108px+env(safe-area-inset-bottom))]"
-        } pt-[84px]`}
+        } ${topBarHidden ? "pt-0" : "pt-[84px]"}`}
       >
         {children}
       </main>

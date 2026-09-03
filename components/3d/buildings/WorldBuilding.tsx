@@ -59,12 +59,12 @@ export function WorldBuilding({
     liveBuildingState === "LIMITED_PROMO";
 
   const effectivePrimaryColor =
-    branding?.primaryColor ?? building.primaryColor ?? "#22C55E";
+    branding?.primaryColor ?? building.primaryColor ?? "#94A3B8";
   const effectiveSecondaryColor =
     branding?.secondaryColor ?? building.secondaryColor ?? "#F8FAFC";
 
   const emissive = useMemo(() => {
-    if (showPromo) return "#22C55E";
+    if (showPromo) return "#F59E0B";
     if (liveBuildingState === "RESERVED") return "#3B82F6";
     if (liveBuildingState === "NEW") return "#F59E0B";
     return undefined;
@@ -106,7 +106,7 @@ export function WorldBuilding({
       {isSelected ? (
         <mesh position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.1, 1.25, 32]} />
-          <meshBasicMaterial color="#22C55E" transparent opacity={0.85} />
+          <meshBasicMaterial color="#E5E7EB" transparent opacity={0.85} />
      </mesh>
       ) : null}
    </group>
